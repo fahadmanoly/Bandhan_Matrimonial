@@ -69,7 +69,7 @@ class ForgotPasswordSerializer(serializers.Serializer):
             print("Encoded User_id",user_id)
             token = PasswordResetTokenGenerator().make_token(user)
             print('Password Reset Token',token)
-            link = 'http://localhost:3000/api/user/reset/'+user_id+'/'+token
+            link = 'http://localhost:3000/api/user/resetpassword/'+user_id+'/'+token
             print('password reset link',link)
             #email link 
             body='Click Following Link to Reset the Password'+link
@@ -81,7 +81,7 @@ class ForgotPasswordSerializer(serializers.Serializer):
             Util.send_email(data)
             return attrs            
         else:
-            raise ValidationErr('The email provided is not registered')
+            raise serializers.ValidationError('The email provided is not registered')
         
         
 class ResetPasswordSerializer(serializers.Serializer):

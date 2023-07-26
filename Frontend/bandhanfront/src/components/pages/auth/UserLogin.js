@@ -1,42 +1,77 @@
 import React, { useState } from "react";
-import { TextField, Button, Box, Alert } from "@mui/material";
+import { Typography, TextField, Button, Box, Alert, CircularProgress } from "@mui/material";
 import { NavLink,useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useLoginUserMutation } from "../../../services/userAuthApi";
+import { getToken, storeToken } from "../../../services/LocalStorageService";
+import { setUserToken } from "../../../features/authSlice";
+import { useEffect } from "react";
+
 
 const UserLogin = () =>{
+    //Frontend error initialization
     const [error, setError] = useState({
         status:false,
         msg:"",
         type:""
     })
+
+    const [serverError, setServerError] = useState({}) 
     const navigate = useNavigate();
-    const handleSubmit = (e) => {
+    const [loginUser, {isLoading}] = useLoginUserMutation()
+    const dispatch = useDispatch()
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
         const actualData = {
             email:data.get('email'),
             password:data.get('password'),
         }
+        const res = await loginUser(actualData)
+        if(res.error){
+            setServerError(res.error.data.errors)
+        }
+        if(res.data){
+            storeToken(res.data.token)
+            let {access_token} = getToken()
+            dispatch(setUserToken ({access_token: access_token}))
+            document.getElementById('login-form').reset()
+            navigate('/UserProfile') 
+        }
+
+
+        //frontend error validation
         if(actualData.email && actualData.password){
             setError({status:true,msg:'Login Successful',type:'success'})
-            document.getElementById('login-form').reset()
+            //document.getElementById('login-form').reset()
             //navigate('/UserProfile') 
-            setTimeout(() => { navigate("/UserProfile")}, 1000);
+            //setTimeout(() => { navigate("/UserProfile")}, 1000);
         }else{
             setError({status:true,msg:'All Fields are Required',type:'error'})      
         }    
         
     }
+
+    let { access_token } = getToken()
+    useEffect(() => {
+        dispatch(setUserToken({access_token: access_token}))
+    }, [access_token, dispatch] )
+    
     return <>
      <Box component='form' noValidate sx={{mt:2}} id='login-form' onSubmit={handleSubmit}>
         <TextField margin='normal' required fullWidth id='email' name='email' label='Email Address' />
+        {serverError.email ? <Typography style={{fontSize:12, color:'red', paddingLeft:10}}>{serverError.email[0]}</Typography> : ""}
         <TextField margin='normal' required fullWidth id='password' name='password' label='Password' type='password' />
+        {serverError.password ? <Typography style={{fontSize:12, color:'red', paddingLeft:10}}>{serverError.password[0]}</Typography> : ""}
         <Box textAlign='center'>
-            <Button type='submit' variant='contained' sx={{mt:3, mb:2, px:5}}>Login</Button>
+            {isLoading ? <CircularProgress /> : <Button type='submit' variant='contained' sx={{mt:3, mb:2, px:5}}>Login</Button>}    
         </Box>
         <NavLink to='/forgotpassword'> Forgot Password ? </NavLink>
-        {error.status ? <Alert severity={error.type}>{error.msg}</Alert> : ''}
+        {serverError.non_field_errors ? <Alert severity="error">{serverError.non_field_errors[0]}</Alert> : ''}
      </Box>
     </>;
 }
 
 export default UserLogin;
+
+ 

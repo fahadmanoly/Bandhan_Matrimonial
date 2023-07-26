@@ -1,19 +1,42 @@
 import React, { useState } from "react";
-import { Alert, Box, Button, TextField } from "@mui/material";
+import { Typography, Alert, Box, Button, TextField } from "@mui/material";
+import { useSelector } from "react-redux/es/hooks/useSelector";
+import { useChangeUserPasswordMutation } from "../../../services/userAuthApi";
+import { getToken } from "../../../services/LocalStorageService";
+
 
 
 const ChangePassword = () => {
+    //frontend validation initialization
     const [error, setError] = useState({status:false, msg:"",type:"" });
-    const handleSubmit = (event) =>{
+
+    const[serverError, setServerError] = useState({})
+    const[serverMsg, setServerMsg] = useState({})
+    const [changeUserPassword] = useChangeUserPasswordMutation()
+    const {access_token} = getToken()
+    const handleSubmit = async(event) =>{
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const actualData = {
             password: data.get('password'),
-            confirm_password: data.get('confirm_password'),
+            password2: data.get('password2'),
         }
-        if (actualData.password && actualData.confirm_password){
-            if(actualData.password === actualData.confirm_password){
-                document.getElementById("change-password-form").requestFullscreen();
+        const res = await changeUserPassword({actualData,access_token})
+        if(res.error){
+            setServerMsg({})
+            setServerError(res.error.data.errors)
+        }
+        if(res.data){
+            setServerError({})
+            setServerMsg(res.data)
+            document.getElementById('change-password-form').reset()
+            //navigate('/UserProfile') 
+        }
+
+        //frontend validation
+        if (actualData.password && actualData.password2){
+            if(actualData.password === actualData.password2){
+                document.getElementById("change-password-form").reset();
                 setError({status:true, msg:"Password Changed Successfully", type: "success"}); 
             }else{
                 setError({status:true, msg:"The given passwords didn't match", type:"error"})
@@ -22,15 +45,22 @@ const ChangePassword = () => {
             setError({status:true, msg:"Please provide the password", type:"error"})
         }
     };
+
+
+    const myData = useSelector(state => state.user)
     return <>
         <Box sx={{display:'flex', flexDirection:'column', flexWrap:'wrap', maxWidth:600, mx:4}}>
             <h1>Change Password</h1>
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt:1}} id="change-password-form">
                 <TextField margin="normal" required fullWidth name="password" label="New Password" type="password" id="password" />
-                <TextField margin="normal" required fullWidth name="confirm_password" label="Confirm New Password" type="password" id="confirm_password" />
+                {serverError.password ? <Typography style={{fontSize:12, color:'red', paddingLeft:10}}>{serverError.password[0]}</Typography> : ""}
+                <TextField margin="normal" required fullWidth name="password2" label="Confirm New Password" type="password" id="password2" />
+                {serverError.password2 ? <Typography style={{fontSize:12, color:'red', paddingLeft:10}}>{serverError.password2[0]}</Typography> : ""}
                 <Box textAlign="center">
                     <Button type="submit" variant="contained" sx={{mt:3, mb:2, px:5}}>Update</Button>
                 </Box>
+                {serverError.non_field_errors ? <Alert severity="error">{serverError.non_field_errors[0]}</Alert> : ''}
+                {serverMsg.msg ? <Alert severity="success">{serverMsg.msg}</Alert> : ''}
                 {error.status ? <Alert severity={error.type}>{error.msg}</Alert> : ""}   
             </Box>
         </Box>

@@ -1,6 +1,7 @@
 import React from "react";
-import { Grid, TextField, Button, Box, Alert } from "@mui/material";
+import { Typography, Grid, TextField, Button, Box, Alert } from "@mui/material";
 import { useState } from "react";
+import { useForgotPasswordMutation } from "../../../services/userAuthApi";
 
 
 const ForgotPassword = () => {
@@ -9,12 +10,28 @@ const ForgotPassword = () => {
         msg:"",
         type:""
     })
-    const handleSubmit = (e) => {
+
+    const[serverError,setServerError] = useState({})
+    const[serverMsg,setServerMsg] = useState({})
+    const [forgotpassword, {isLoading}] = useForgotPasswordMutation()
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
         const actualData = {
             email:data.get('email'),
         }
+        const res = await forgotpassword(actualData)
+        if(res.error){
+          setServerMsg({})
+          setServerError(res.error.data.errors)
+        }
+        if(res.data){
+          setServerError({})
+          setServerMsg(res.data)
+          document.getElementById('forgot-password-form').reset()
+        }
+        
+        //frontend validation
         if(actualData.email){
             setError({status:true,msg:'Password Reset Email Sent',type:'success'})
             document.getElementById('forgot-password-form').reset()
@@ -28,10 +45,13 @@ const ForgotPassword = () => {
         <Grid item sm={6} xs={12}>
           <Box component='form' noValidate sx={{mt:2}} id='forgot-password-form' onSubmit={handleSubmit}>
              <TextField margin='normal' required fullWidth id='email' name='email' label='Email Address' />
+             {serverError.email ? <Typography style={{fontSize:12, color:'red', paddingLeft:10}}>{serverError.email[0]}</Typography> : ""}
              <Box textAlign='center'>
                 <Button type='submit' variant='contained' sx={{mt:3, mb:2, px:5}}>Send</Button>
              </Box>
-             {error.status ? <Alert severity={error.type}>{error.msg}</Alert> : ''}
+             {serverError.non_field_errors ? <Alert severity="error">{serverError.non_field_errors[0]}</Alert> : ''}
+             {serverMsg.msg ? <Alert severity="success">{serverMsg.msg}</Alert> : ''}
+             
           </Box>
         </Grid>
       </Grid>

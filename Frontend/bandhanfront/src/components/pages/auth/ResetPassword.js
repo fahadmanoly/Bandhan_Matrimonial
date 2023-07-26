@@ -1,50 +1,51 @@
 import React from "react";
-import { Grid, TextField, Button, Box, Alert } from "@mui/material";
+import { Typography, Grid, TextField, Button, Box, Alert } from "@mui/material";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useParams } from "react-router-dom";
+import { useResetPasswordMutation } from "../../../services/userAuthApi";
 
 
 const ResetPassword = () => {
+    const [serverError, setServerError] = useState({})
+    const [serverMsg, setServerMsg] = useState({})
+    const [resetpassword] = useResetPasswordMutation()
+    const {id, token} = useParams()
     const navigate = useNavigate()
-    const [error, setError] = useState({
-        status:false,
-        msg:"",
-        type:""
-    })
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
         const actualData = {
             password:data.get('password'),
-            confirm_password:data.get('confirm_password'),
-
+            password2:data.get('password2'),
         }
-        if(actualData.password && actualData.confirm_password){
-            if(actualData.password === actualData.confirm_password){
-                setError({status:true,msg:'Password Reset Successful',type:'success'})
-                document.getElementById('password-reset-form').reset()
-                setTimeout(() => { navigate("/login")}, 1000);
-            }else{
-                setError({status:true,msg:"The given passwords didn't match",type:"error"})
-            }
+        const res = await resetpassword({actualData, id, token})
+        if(res.error){
+            setServerMsg({})
+            setServerError(res.error.data.errors)
+        }
+        if(res.data){
+            setServerError({})
+            setServerMsg(res.data)
+            document.getElementById('password-reset-form').reset()
+            navigate("/login")
 
-        }else{
-            setError({status:true,msg:'Please provide the password',type:'error'})      
-        }    
-        
-    }
+        }     
+    };
     return <>
       <Grid container justifyContent={"center"}>
         <Grid item sm={6} xs={12}>
           <h1>Reset Password</h1>
           <Box component='form' noValidate sx={{mt:2}} id='password-reset-form' onSubmit={handleSubmit}>
              <TextField margin='normal' required fullWidth id='password' name='password' label='New Password' type='password' />
-             <TextField margin='normal' required fullWidth id='confirm_password' name='confirm_password' label='Confirm New Password' type='password' />
+             {serverError.password ? <Typography style={{fontSize:12, color:'red', paddingLeft:10}}>{serverError.password[0]}</Typography> : ""}
+             <TextField margin='normal' required fullWidth id='password2' name='password2' label='Confirm New Password' type='password' />
+             {serverError.password2 ? <Typography style={{fontSize:12, color:'red', paddingLeft:10}}>{serverError.password2[0]}</Typography> : ""}
              <Box textAlign='center'>
                 <Button type='submit' variant='contained' sx={{mt:3, mb:2, px:5}}>Reset Password</Button>
              </Box>
-             {error.status ? <Alert severity={error.type}>{error.msg}</Alert> : ''}
+             {serverError.non_field_errors ? <Alert severity="error">{serverError.non_field_errors[0]}</Alert> : ''}
+             {serverMsg.msg ? <Alert severity="success">{serverMsg.msg}</Alert> : ''}
+            
           </Box>
         </Grid>
       </Grid>
