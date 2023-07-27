@@ -41,10 +41,17 @@ class UserProfileSerializer(serializers.ModelSerializer):
         
         
 class UserChangePasswordSerializer(serializers.Serializer):
+    current_password=serializers.CharField(max_length=255, style={'input_type':'password'}, write_only=True) 
     password=serializers.CharField(max_length=255, style={'input_type':'password'}, write_only=True) 
     password2=serializers.CharField(max_length=255, style={'input_type':'password'}, write_only=True)
     class Meta:
-        fields = ['password','password2']
+        fields = ['current_password', 'password','password2']
+        
+    def validate_current_password(self, value):
+        user = self.context.get('user')
+        if not user.check_password(value):
+            raise serializers.ValidationError("Incorrect current password.")
+        return value
         
     def validate(self,attrs):
         password = attrs.get('password')
@@ -55,6 +62,7 @@ class UserChangePasswordSerializer(serializers.Serializer):
         user.set_password(password)
         user.save()
         return attrs
+        
     
 class ForgotPasswordSerializer(serializers.Serializer):
     email=serializers.EmailField(max_length=255) 

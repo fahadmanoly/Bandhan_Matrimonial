@@ -7,43 +7,32 @@ import { getToken } from "../../../services/LocalStorageService";
 
 
 const ChangePassword = () => {
-    //frontend validation initialization
-    const [error, setError] = useState({status:false, msg:"",type:"" });
-
     const[serverError, setServerError] = useState({})
     const[serverMsg, setServerMsg] = useState({})
     const [changeUserPassword] = useChangeUserPasswordMutation()
     const {access_token} = getToken()
-    const handleSubmit = async(event) =>{
+    const handleSubmit = async (event) =>{
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const actualData = {
+            current_password: data.get('current_password'),
             password: data.get('password'),
             password2: data.get('password2'),
         }
         const res = await changeUserPassword({actualData,access_token})
         if(res.error){
+            console.log(res.error.data.errors)
             setServerMsg({})
             setServerError(res.error.data.errors)
         }
         if(res.data){
+            console.log(res.data )
             setServerError({})
             setServerMsg(res.data)
             document.getElementById('change-password-form').reset()
             //navigate('/UserProfile') 
         }
 
-        //frontend validation
-        if (actualData.password && actualData.password2){
-            if(actualData.password === actualData.password2){
-                document.getElementById("change-password-form").reset();
-                setError({status:true, msg:"Password Changed Successfully", type: "success"}); 
-            }else{
-                setError({status:true, msg:"The given passwords didn't match", type:"error"})
-            }
-        }else{
-            setError({status:true, msg:"Please provide the password", type:"error"})
-        }
     };
 
 
@@ -52,6 +41,8 @@ const ChangePassword = () => {
         <Box sx={{display:'flex', flexDirection:'column', flexWrap:'wrap', maxWidth:600, mx:4}}>
             <h1>Change Password</h1>
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt:1}} id="change-password-form">
+                <TextField margin="normal" required fullWidth name="current_password" label="Current Password" type="password" id="current_password" />
+                {serverError.current_password ? <Typography style={{fontSize:12, color:'red', paddingLeft:10}}>{serverError.current_password[0]}</Typography> : ""}
                 <TextField margin="normal" required fullWidth name="password" label="New Password" type="password" id="password" />
                 {serverError.password ? <Typography style={{fontSize:12, color:'red', paddingLeft:10}}>{serverError.password[0]}</Typography> : ""}
                 <TextField margin="normal" required fullWidth name="password2" label="Confirm New Password" type="password" id="password2" />
@@ -60,8 +51,8 @@ const ChangePassword = () => {
                     <Button type="submit" variant="contained" sx={{mt:3, mb:2, px:5}}>Update</Button>
                 </Box>
                 {serverError.non_field_errors ? <Alert severity="error">{serverError.non_field_errors[0]}</Alert> : ''}
-                {serverMsg.msg ? <Alert severity="success">{serverMsg.msg}</Alert> : ''}
-                {error.status ? <Alert severity={error.type}>{error.msg}</Alert> : ""}   
+                {serverMsg.msg ? <Alert severity="success">{serverMsg.msg}</Alert> : ''} 
+  
             </Box>
         </Box>
     </>;
