@@ -1,7 +1,8 @@
+from urllib import request
 from xml.dom import ValidationErr
 from django.forms import ValidationError
 from rest_framework import serializers
-from .models import User
+from .models import User, UserInfo, UserPreference, ProfilePicture
 from django.utils.encoding import smart_str,force_bytes,DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -37,7 +38,14 @@ class UserLoginSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','email','name']
+        fields = ['id', 'email', 'name']
+        
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserInfo
+        fields = "__all__"
+        
+
         
         
 class UserChangePasswordSerializer(serializers.Serializer):

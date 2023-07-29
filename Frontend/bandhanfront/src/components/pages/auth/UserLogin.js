@@ -9,13 +9,6 @@ import { useEffect } from "react";
 
 
 const UserLogin = () =>{
-    //Frontend error initialization
-    const [error, setError] = useState({
-        status:false,
-        msg:"",
-        type:""
-    })
-
     const [serverError, setServerError] = useState({}) 
     const navigate = useNavigate();
     const [loginUser, {isLoading}] = useLoginUserMutation()
@@ -36,19 +29,8 @@ const UserLogin = () =>{
             let {access_token} = getToken()
             dispatch(setUserToken ({access_token: access_token}))
             document.getElementById('login-form').reset()
-            navigate('/UserProfile') 
-        }
-
-
-        //frontend error validation
-        if(actualData.email && actualData.password){
-            setError({status:true,msg:'Login Successful',type:'success'})
-            //document.getElementById('login-form').reset()
-            //navigate('/UserProfile') 
-            //setTimeout(() => { navigate("/UserProfile")}, 1000);
-        }else{
-            setError({status:true,msg:'All Fields are Required',type:'error'})      
-        }    
+            navigate('/userinfo') 
+        }  
         
     }
 

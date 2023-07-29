@@ -14,7 +14,7 @@ const Registration = () => {
         type:""
     })
     const [serverError, setServerError] = useState({}) 
-    const navigate = useNavigate();
+    const navigate = useNavigate()
     const [registerUser, {isLoading}] = useRegisterUserMutation()
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -33,13 +33,12 @@ const Registration = () => {
         if(res.data){
             storeToken(res.data.token)
             document.getElementById('registration-form').reset()
-            navigate("/UserProfile")
+            navigate("/userinfo")
         }
         
         //Frontend error validation
         if(actualData.name && actualData.email && actualData.password && actualData.tc !==null){
             if (actualData.password === actualData.password2) {
-                console.log(actualData);
                 setError({status:true,msg:'Registration Successful',type:'success'})
                 //document.getElementById('registration-form').reset()
                 //setTimeout(() => { navigate("/UserProfile")}, 1000);
@@ -49,9 +48,9 @@ const Registration = () => {
  
         }else{
             setError({status:true,msg:'All Fields are Required',type:'error'})      
-        }    
-        
+        }        
     }
+
     return <>
     <Box component='form' noValidate sx={{mt:2}} id='registration-form' onSubmit={handleSubmit}>
         <TextField margin='normal' required fullWidth id='name' name='name' label='Name' />

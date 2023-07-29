@@ -137,7 +137,7 @@ FAMILY_VALUES=(
 
 class UserInfo(models.Model):
     user=models.OneToOneField(User,related_name='user_info',on_delete=models.CASCADE)
-    date_of_birth=models.DateField(null=True,blank=True)
+    date_of_birth=models.DateField(null=False,blank=False)
     height=models.IntegerField(null=True,blank=True)
     weight=models.IntegerField(null=True,blank=True)
     marital_status=models.CharField(choices=MARITAL_STATUS_CHOICES, max_length=100)
@@ -148,11 +148,14 @@ class UserInfo(models.Model):
     country=models.CharField(max_length=200,default='India')
     native_place=models.CharField(max_length=200,default='Kerala')
     location=models.CharField(max_length=200,default='kozhikode')
-    mobile=models.IntegerField(default=910123456789,null=False,blank=False)
+    mobile=models.IntegerField(null=False,blank=False)
     profession=models.CharField(max_length=200,default='freelancer')
     family_status=models.CharField(choices=FAMILY_STATUS,max_length=100)
     family_values=models.CharField(choices=FAMILY_VALUES,max_length=100)
     about_me=models.CharField(max_length=2000,null=True,blank=True)
+    
+    def __str__(self):
+        return self.user
     
     
 class UserPreference(models.Model):

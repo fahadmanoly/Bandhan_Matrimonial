@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Typography, Alert, Box, Button, TextField } from "@mui/material";
+import { Typography, Alert, Box, Button, TextField, CircularProgress } from "@mui/material";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { useChangeUserPasswordMutation } from "../../../services/userAuthApi";
 import { getToken } from "../../../services/LocalStorageService";
@@ -9,7 +9,7 @@ import { getToken } from "../../../services/LocalStorageService";
 const ChangePassword = () => {
     const[serverError, setServerError] = useState({})
     const[serverMsg, setServerMsg] = useState({})
-    const [changeUserPassword] = useChangeUserPasswordMutation()
+    const [changeUserPassword, isLoading] = useChangeUserPasswordMutation()
     const {access_token} = getToken()
     const handleSubmit = async (event) =>{
         event.preventDefault();
@@ -21,7 +21,6 @@ const ChangePassword = () => {
         }
         const res = await changeUserPassword({actualData,access_token})
         if(res.error){
-            console.log(res.error.data.errors)
             setServerMsg({})
             setServerError(res.error.data.errors)
         }
@@ -48,7 +47,7 @@ const ChangePassword = () => {
                 <TextField margin="normal" required fullWidth name="password2" label="Confirm New Password" type="password" id="password2" />
                 {serverError.password2 ? <Typography style={{fontSize:12, color:'red', paddingLeft:10}}>{serverError.password2[0]}</Typography> : ""}
                 <Box textAlign="center">
-                    <Button type="submit" variant="contained" sx={{mt:3, mb:2, px:5}}>Update</Button>
+                    {isLoading ? <CircularProgress /> : <Button type="submit" variant="contained" sx={{mt:3, mb:2, px:5}}>Update</Button>}
                 </Box>
                 {serverError.non_field_errors ? <Alert severity="error">{serverError.non_field_errors[0]}</Alert> : ''}
                 {serverMsg.msg ? <Alert severity="success">{serverMsg.msg}</Alert> : ''} 

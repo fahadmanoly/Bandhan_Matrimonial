@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   email:"",
   name:"",
+  id:"",
 }
 
 export const userSlice = createSlice({
@@ -13,10 +14,12 @@ export const userSlice = createSlice({
     setUserInfo:(state,action) => {
         state.email = action.payload.email
         state.name = action.payload.name
+        state.id = action.payload.id
     },
     unsetUserInfo:(state,action) => {
         state.email = action.payload.email
         state.name = action.payload.name
+        state.id = action.payload.id
     },
     
   },

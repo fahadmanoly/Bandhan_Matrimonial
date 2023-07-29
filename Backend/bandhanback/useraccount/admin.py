@@ -1,6 +1,6 @@
 import imp
 from django.contrib import admin
-from useraccount.models import User
+from useraccount.models import User,UserInfo,UserPreference,ProfilePicture
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 
@@ -33,5 +33,21 @@ class UserModelAdmin(BaseUserAdmin):
 # Now register the new UserModelAdmin...
 admin.site.register(User, UserModelAdmin)
 
+
+@admin.register(UserInfo)
+class UserInfoModelAdmin(admin.ModelAdmin):
+ list_display = ['id', 'user', 'date_of_birth', 'height', 'weight', 'marital_status', 'mother_tongue', 'religion', 'gender', 'Education', 'country', 'native_place', 'location', 'mobile', 'profession', 'family_status', 'family_values', 'about_me']
+ 
+ 
+ 
+@admin.register(UserPreference)
+class UserPreferenceModelAdmin(admin.ModelAdmin):
+ list_display = ['id', 'user', 'date_of_birth', 'height', 'weight', 'marital_status', 'mother_tongue', 'religion', 'Education', 'country', 'native_place', 'location', 'profession', 'family_status', 'family_values']
+ 
+ 
+ 
+@admin.register(ProfilePicture)
+class ProfilePictureModelAdmin(admin.ModelAdmin):
+ list_display = ['id', 'user', 'image']
 
 

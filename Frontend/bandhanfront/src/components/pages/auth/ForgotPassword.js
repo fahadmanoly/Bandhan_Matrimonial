@@ -1,16 +1,10 @@
 import React from "react";
-import { Typography, Grid, TextField, Button, Box, Alert } from "@mui/material";
+import { Typography, Grid, TextField, Button, Box, Alert, CircularProgress } from "@mui/material";
 import { useState } from "react";
 import { useForgotPasswordMutation } from "../../../services/userAuthApi";
 
 
 const ForgotPassword = () => {
-    const [error, setError] = useState({
-        status:false,
-        msg:"",
-        type:""
-    })
-
     const[serverError,setServerError] = useState({})
     const[serverMsg,setServerMsg] = useState({})
     const [forgotpassword, {isLoading}] = useForgotPasswordMutation()
@@ -29,15 +23,7 @@ const ForgotPassword = () => {
           setServerError({})
           setServerMsg(res.data)
           document.getElementById('forgot-password-form').reset()
-        }
-        
-        //frontend validation
-        if(actualData.email){
-            setError({status:true,msg:'Password Reset Email Sent',type:'success'})
-            document.getElementById('forgot-password-form').reset()
-        }else{
-            setError({status:true,msg:'Please provide the registered email address',type:'error'})      
-        }    
+        }   
         
     }
     return <>
@@ -47,7 +33,7 @@ const ForgotPassword = () => {
              <TextField margin='normal' required fullWidth id='email' name='email' label='Email Address' />
              {serverError.email ? <Typography style={{fontSize:12, color:'red', paddingLeft:10}}>{serverError.email[0]}</Typography> : ""}
              <Box textAlign='center'>
-                <Button type='submit' variant='contained' sx={{mt:3, mb:2, px:5}}>Send</Button>
+                {isLoading ? <CircularProgress /> : <Button type='submit' variant='contained' sx={{mt:3, mb:2, px:5}}>Send</Button>}
              </Box>
              {serverError.non_field_errors ? <Alert severity="error">{serverError.non_field_errors[0]}</Alert> : ''}
              {serverMsg.msg ? <Alert severity="success">{serverMsg.msg}</Alert> : ''}
