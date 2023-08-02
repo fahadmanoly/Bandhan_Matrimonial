@@ -161,6 +161,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'useraccount.User'
 
+#OTP key
+MY_API_KEY = 'deca5119-2ec8-11ee-addf-0200cd936042'
 
 #Email configuration
 EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'

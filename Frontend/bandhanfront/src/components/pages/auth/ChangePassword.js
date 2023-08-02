@@ -9,7 +9,7 @@ import { getToken } from "../../../services/LocalStorageService";
 const ChangePassword = () => {
     const[serverError, setServerError] = useState({})
     const[serverMsg, setServerMsg] = useState({})
-    const [changeUserPassword, isLoading] = useChangeUserPasswordMutation()
+    const [changeUserPassword, {isLoading}] = useChangeUserPasswordMutation()
     const {access_token} = getToken()
     const handleSubmit = async (event) =>{
         event.preventDefault();
@@ -47,7 +47,7 @@ const ChangePassword = () => {
                 <TextField margin="normal" required fullWidth name="password2" label="Confirm New Password" type="password" id="password2" />
                 {serverError.password2 ? <Typography style={{fontSize:12, color:'red', paddingLeft:10}}>{serverError.password2[0]}</Typography> : ""}
                 <Box textAlign="center">
-                    {isLoading ? <CircularProgress /> : <Button type="submit" variant="contained" sx={{mt:3, mb:2, px:5}}>Update</Button>}
+                    {isLoading ? <CircularProgress /> : <Button type="submit" variant="contained" sx={{mt:3, mb:2, px:5, backgroundColor:'#6d1b7b'}}>Update</Button>}
                 </Box>
                 {serverError.non_field_errors ? <Alert severity="error">{serverError.non_field_errors[0]}</Alert> : ''}
                 {serverMsg.msg ? <Alert severity="success">{serverMsg.msg}</Alert> : ''} 

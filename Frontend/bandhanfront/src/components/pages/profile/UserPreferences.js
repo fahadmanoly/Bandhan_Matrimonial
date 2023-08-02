@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Button, CssBaseline, Grid, CircularProgress, TextField, Typography, Alert, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getToken } from "../../../services/LocalStorageService";
-import { useGetLoggedUserQuery, useUserInfoMutation } from "../../../services/userAuthApi";
+import { useGetLoggedUserQuery, useUserPreferenceMutation } from "../../../services/userAuthApi";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { setUserInfo } from "../../../features/userSlice";
 import { useDispatch } from "react-redux";
@@ -17,13 +17,13 @@ const LANGUAGE_CHOICES = ['Assamese', 'Bengali', 'Gujarati', 'Hindi', 'Kannada',
 const FAMILY_STATUS = ['middle class', 'upper middle class', 'lower middle class', 'rich', 'affluent' ]
 const FAMILY_VALUES=['orthodox', 'traditional', 'moderate','liberal' ]
 
-const UserInfo = () => {
+const UserPreferences = () => {
     const[serverError, setServerError] = useState({})
     const[serverMsg, setServerMsg] = useState({})
     const navigate = useNavigate()
     const {access_token} = getToken()
     const dispatch = useDispatch()
-    const [userInfo] = useUserInfoMutation()
+    const [userPref] = useUserPreferenceMutation()
     
     //Bringing Data from Redux store and setting to access
     const {data, isSuccess} = useGetLoggedUserQuery(access_token);
@@ -63,7 +63,7 @@ const UserInfo = () => {
           mobile: formdata.get('mobile'),
       }
       
-      const res = await userInfo({actualData,access_token})
+      const res = await userPref({actualData,access_token})
       if(res.error){
           setServerMsg({})
           setServerError(res.error.data)
@@ -71,8 +71,8 @@ const UserInfo = () => {
       if(res.data){
           setServerError({})
           setServerMsg(res.data)
-          document.getElementById('userinfo-form').reset()
-          navigate('/sendotp') 
+          document.getElementById('userpreference-form').reset()
+          //navigate('/userhome') 
       }
 
     };
@@ -81,7 +81,7 @@ const UserInfo = () => {
     return <>
         <CssBaseline />
         
-        <Grid container component='form' noValidate  sx={{height:'114vh', backgroundColor:'white', padding:'1px', paddingTop:'1px',width: "100%" }} id='userinfo-form' onSubmit={handleSubmit}>
+        <Grid container component='form' noValidate  sx={{height:'86vh', backgroundColor:'white', padding:'1px', paddingTop:'1px',width: "100%" }} id='userpreference-form' onSubmit={handleSubmit}>
           <Grid item xs={6} display={"flex"} flexDirection={"column"} sx={{backgroundColor:"white", padding:'1px', paddingTop:'1px', color: "white"}}>
 
               <TextField margin='normal' required sx={{width:'95%', ml:2}} id='date_of_birth' name='date_of_birth' label='Date of Birth' type="date" InputLabelProps={{ shrink: true, }} inputProps={{max: "2005-07-31", min: "1970-07-31",}} />
@@ -105,11 +105,11 @@ const UserInfo = () => {
               </FormControl>              
               {serverError.mother_tongue? <Typography style={{fontSize:16, color:'red', paddingLeft:10}}>{serverError.mother_tongue}</Typography> : ""}
               
-              <FormControl sx={{width:'95%', ml:2, mt:2,mb:'8px'}}>
+              {/* <FormControl sx={{width:'95%', ml:2, mt:2,mb:'8px'}}>
               <InputLabel>Gender</InputLabel>
               <Select id="gender" name="gender" label='Gender'>{GENDER_CHOICES.map((gender) => (<MenuItem key={gender} value={gender}>{gender}</MenuItem>))}</Select>
               </FormControl>
-              {serverError.gender? <Typography style={{fontSize:16, color:'red', paddingLeft:10}}>{serverError.gender}</Typography> : ""}
+              {serverError.gender? <Typography style={{fontSize:16, color:'red', paddingLeft:10}}>{serverError.gender}</Typography> : ""} */}
               
               <FormControl sx={{width:'95%', ml:2, mt:2,mb:'8px'}}>
               <InputLabel>Religion</InputLabel>
@@ -117,24 +117,26 @@ const UserInfo = () => {
               </FormControl>              
               {serverError.religion? <Typography style={{fontSize:16, color:'red', paddingLeft:10}}>{serverError.religion}</Typography> : ""}
           
-              <FormControl sx={{width:'95%', ml:2, mt:2,mb:'8px'}}>
-              <InputLabel>Education</InputLabel>
-              <Select id="education" name="education" label='Education'>{EDUCATION_CHOICES.map((education) => (<MenuItem key={education} value={education}>{education}</MenuItem>))}</Select>
-              </FormControl>                 
-              {serverError.Education? <Typography style={{fontSize:16, color:'red', paddingLeft:10}}>{serverError.Education}</Typography> : ""}
+              
     
           </Grid>
 
           <Grid  item xs={6} display={"flex"} flexDirection={"column"}  sx={{backgroundColor:"white", padding:'0.5px', paddingTop:'1px', color: "white"}}>
               
-              <TextField margin='normal' required sx={{width:'95%', ml:2}} id='country' name='country' label='Country' />
-              {serverError.country? <Typography style={{fontSize:16, color:'red', paddingLeft:10}}>{serverError.country}</Typography> : ""}
+              {/* <TextField margin='normal' required sx={{width:'95%', ml:2}} id='country' name='country' label='Country' />
+              {serverError.country? <Typography style={{fontSize:16, color:'red', paddingLeft:10}}>{serverError.country}</Typography> : ""} */}
           
               <TextField margin='normal' required sx={{width:'95%', ml:2}} id='nativePlace' name='nativePlace' label='Native Place' />
               {serverError.native_place? <Typography style={{fontSize:16, color:'red', paddingLeft:10}}>{serverError.native_place}</Typography> : ""}
           
               <TextField margin='normal' required sx={{width:'95%', ml:2}} id='location' name='location' label='Location' />
               {serverError.location? <Typography style={{fontSize:16, color:'red', paddingLeft:10}}>{serverError.location}</Typography> : ""}
+
+              <FormControl sx={{width:'95%', ml:2, mt:2,mb:'8px'}}>
+              <InputLabel>Education</InputLabel>
+              <Select id="education" name="education" label='Education'>{EDUCATION_CHOICES.map((education) => (<MenuItem key={education} value={education}>{education}</MenuItem>))}</Select>
+              </FormControl>                 
+              {serverError.Education? <Typography style={{fontSize:16, color:'red', paddingLeft:10}}>{serverError.Education}</Typography> : ""}
           
               <TextField margin='normal' required sx={{width:'95%', ml:2}} id='profession' name='profession' label='Profession' />
               {serverError.profession? <Typography style={{fontSize:16, color:'red', paddingLeft:10}}>{serverError.profession}</Typography> : ""}
@@ -151,16 +153,16 @@ const UserInfo = () => {
               </FormControl>              
               {serverError.family_values? <Typography style={{fontSize:16, color:'red', paddingLeft:10}}>{serverError.family_values}</Typography> : ""}
           
-              <TextField margin='normal' required sx={{width:'95%', ml:2}} id='aboutMe' name='aboutMe' label='About Me' />
-              {serverError.about_me? <Typography style={{fontSize:16, color:'red', paddingLeft:10}}>{serverError.about_me}</Typography> : ""}
+              {/* <TextField margin='normal' required sx={{width:'95%', ml:2}} id='aboutMe' name='aboutMe' label='About Me' />
+              {serverError.about_me? <Typography style={{fontSize:16, color:'red', paddingLeft:10}}>{serverError.about_me}</Typography> : ""} */}
           
-              <TextField margin='normal' required sx={{width:'95%', ml:2}} id='mobile' name='mobile' label='Phone Number' />
-              {serverError.mobile? <Typography style={{fontSize:16, color:'red', paddingLeft:10}}>{serverError.mobile}</Typography> : ""}
+              {/* <TextField margin='normal' required sx={{width:'95%', ml:2}} id='mobile' name='mobile' label='Phone Number' />
+              {serverError.mobile? <Typography style={{fontSize:16, color:'red', paddingLeft:10}}>{serverError.mobile}</Typography> : ""} */}
                 
           </Grid>
           
           <Box xs={12} sx={{margin: "auto"}}>
-            <Button xs={12} sx={{backgroundColor:'#6d1b7b'}} type='submit' variant='contained' >Save and Verify Mobile</Button>
+            <Button xs={12} sx={{backgroundColor:'#6d1b7b'}} type='submit' variant='contained' >Save Preferences</Button>
            </Box>
            {serverError.non_field_errors ? <Alert severity="error">{serverError.non_field_errors[0]}</Alert> : ''}
            {serverMsg.msg ? <Alert severity="success">{serverMsg.msg}</Alert> : ''} 
@@ -169,4 +171,4 @@ const UserInfo = () => {
 
         </>;
 };
-export default UserInfo;
+export default UserPreferences;

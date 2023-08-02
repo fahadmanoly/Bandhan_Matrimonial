@@ -10,6 +10,9 @@ import ResetPassword from './components/pages/auth/ResetPassword';
 import UserProfile from './components/pages/profile/UserProfile';
 import { useSelector } from 'react-redux/es/hooks/useSelector';
 import UserInfo from './components/pages/profile/UserInfo';
+import SendOTP from './components/pages/profile/SendOTP';
+import VerifyOTP from './components/pages/profile/VerifyOTP';
+import UserPreferences from './components/pages/profile/UserPreferences';
 
 
 function App() {
@@ -24,6 +27,11 @@ function App() {
           <Route path='forgotpassword' element={<ForgotPassword />} />
           <Route path='api/user/resetpassword/:id/:token' element={<ResetPassword />} />
           <Route path='userinfo' element={access_token ? <UserInfo /> : <Navigate to="/login" />} />
+          <Route path='sendotp' element={access_token ? <SendOTP /> : <Navigate to="/login" />} />
+          <Route path='verifyotp' element={access_token ? <VerifyOTP /> : <Navigate to="/login" />} />
+          <Route path='userpreference' element={<UserPreferences />} />
+
+
         </Route> 
         <Route path='/userprofile' element={access_token ? <UserProfile /> : <Navigate to="/login" />} />
 

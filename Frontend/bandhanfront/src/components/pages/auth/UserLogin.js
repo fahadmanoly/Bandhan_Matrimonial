@@ -46,7 +46,7 @@ const UserLogin = () =>{
         <TextField margin='normal' required fullWidth id='password' name='password' label='Password' type='password' />
         {serverError.password ? <Typography style={{fontSize:12, color:'red', paddingLeft:10}}>{serverError.password[0]}</Typography> : ""}
         <Box textAlign='center'>
-            {isLoading ? <CircularProgress /> : <Button type='submit' variant='contained' sx={{mt:3, mb:2, px:5}}>Login</Button>}    
+            {isLoading ? <CircularProgress /> : <Button type='submit' variant='contained' sx={{mt:3, mb:2, px:5, backgroundColor:'#6d1b7b'}}>Login</Button>}    
         </Box>
         <NavLink to='/forgotpassword'> Forgot Password ? </NavLink>
         {serverError.non_field_errors ? <Alert severity="error">{serverError.non_field_errors[0]}</Alert> : ''}

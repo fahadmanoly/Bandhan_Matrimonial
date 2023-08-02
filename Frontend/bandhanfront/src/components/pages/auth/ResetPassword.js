@@ -41,7 +41,7 @@ const ResetPassword = () => {
              <TextField margin='normal' required fullWidth id='password2' name='password2' label='Confirm New Password' type='password' />
              {serverError.password2 ? <Typography style={{fontSize:12, color:'red', paddingLeft:10}}>{serverError.password2[0]}</Typography> : ""}
              <Box textAlign='center'>
-                <Button type='submit' variant='contained' sx={{mt:3, mb:2, px:5}}>Reset Password</Button>
+                <Button type='submit' variant='contained' sx={{mt:3, mb:2, px:5, backgroundColor:'#6d1b7b'}}>Reset Password</Button>
              </Box>
              {serverError.non_field_errors ? <Alert severity="error">{serverError.non_field_errors[0]}</Alert> : ''}
              {serverMsg.msg ? <Alert severity="success">{serverMsg.msg}</Alert> : ''}

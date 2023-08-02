@@ -1,8 +1,3 @@
-from enum import auto
-from http.client import MOVED_PERMANENTLY
-from pyexpat import model
-from turtle import update
-from typing import runtime_checkable
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
 
@@ -39,6 +34,7 @@ class User(AbstractBaseUser):
     tc=models.BooleanField()
     is_active=models.BooleanField(default=True)
     is_phone_verified=models.BooleanField(default=False)
+    is_preferences=models.BooleanField(default=False)
     is_block=models.BooleanField(default=False)
     is_admin=models.BooleanField(default=False)
     is_gold=models.BooleanField(default=False)
@@ -65,58 +61,58 @@ class User(AbstractBaseUser):
         return self.is_admin
     
     
-MARITAL_STATUS_CHOICES = (
+MARITAL_STATUS_CHOICES = [
     ('Never Married','Never Married'),
     ('Divorced','Divorced'),
     ('Widowed','Widowed'),
     ('Seperated,but not legally divorced','Seperated,but not legally divorced'),
-)
+]
 GENDER_CHOICES = (
-    ('male', 'Male'),
-    ('female', 'Female'),
-    ('other', 'Other'),
+    ('Male', 'Male'),
+    ('Female', 'Female'),
+    ('Other', 'Other'),
 )
 EDUCATION_CHOICES = (
-    ('high_school', 'High School'),
-    ('bachelors', "Bachelor's Degree"),
-    ('masters', "Master's Degree"),
-    ('doctorate', 'Doctorate'),
-    ('other', 'Other'),
+    ('High School', 'High School'),
+    ('Bachelors', "Bachelors"),
+    ('Master Degree', "Master Degree"),
+    ('Doctorate', 'Doctorate'),
+    ('ther', 'Other'),
 )
 RELIGION_CHOICES = (
-    ('Islam', 'Muslim'),
-    ('Christianity', "Christian"),
-    ('Judaism', "Jewish"),
-    ('Hinduism', 'Hindu'),
-    ('Jainism', 'Jainist'),
-    ('Budhism', 'Budhist'),
-    ('Sikhism', 'Sikh'),
+    ('Muslim', 'Muslim'),
+    ('Christian', "Christian"),
+    ('Jewish', "Jewish"),
+    ('Hindu', 'Hindu'),
+    ('Jainist', 'Jainist'),
+    ('Budhist', 'Budhist'),
+    ('Sikh', 'Sikh'),
 )
 LANGUAGE_CHOICES = (
-    ('as', 'Assamese'),
-    ('bn', 'Bengali'),
-    ('gu', 'Gujarati'),
-    ('hi', 'Hindi'),
-    ('kn', 'Kannada'),
-    ('ks', 'Kashmiri'),
-    ('kok', 'Konkani'),
-    ('ml', 'Malayalam'),
-    ('mni', 'Manipuri (Meitei)'),
-    ('mr', 'Marathi'),
-    ('ne', 'Nepali'),
-    ('or', 'Odia (Oriya)'),
-    ('pa', 'Punjabi'),
-    ('sa', 'Sanskrit'),
-    ('sd', 'Sindhi'),
-    ('ta', 'Tamil'),
-    ('te', 'Telugu'),
-    ('ur', 'Urdu'),
-    ('ar', 'Arabic'),
-    ('bho', 'Bhojpuri'),
-    ('hne', 'Chhattisgarhi (Khadi Boli)'),
-    ('nrm', 'Nepali'),
-    ('raj', 'Rajasthani'),
-    ('rmy-gy', 'Romani (Greek)'),
+    ('Assamese', 'Assamese'),
+    ('Bengali', 'Bengali'),
+    ('Gujarati', 'Gujarati'),
+    ('Hindi', 'Hindi'),
+    ('Kannada', 'Kannada'),
+    ('Kashmiri', 'Kashmiri'),
+    ('Konkani', 'Konkani'),
+    ('Malayalam', 'Malayalam'),
+    ('Manipuri', 'Manipuri'),
+    ('Marathi', 'Marathi'),
+    ('Nepali', 'Nepali'),
+    ('Oriya', 'Oriya'),
+    ('Punjabi', 'Punjabi'),
+    ('Sanskrit', 'Sanskrit'),
+    ('Sindhi', 'Sindhi'),
+    ('Tamil', 'Tamil'),
+    ('Telugu', 'Telugu'),
+    ('Urdu', 'Urdu'),
+    ('Arabic', 'Arabic'),
+    ('Bhojpuri', 'Bhojpuri'),
+    ('Chhattisgarhi', 'Chhattisgarhi'),
+    ('Nepali', 'Nepali'),
+    ('Rajasthani', 'Rajasthani'),
+    ('Romani', 'Romani'),
 )
 
 FAMILY_STATUS = (
@@ -160,23 +156,39 @@ class UserInfo(models.Model):
     
 class UserPreference(models.Model):
     user=models.OneToOneField(User,related_name='user_preference',on_delete=models.CASCADE)
-    date_of_birth=models.DateField(null=True,blank=True)
+    date_of_birth=models.DateField(null=True,default='2000-01-01')
     height=models.IntegerField(null=True,blank=True)
     weight=models.IntegerField(null=True,blank=True)
     marital_status=models.CharField(choices=MARITAL_STATUS_CHOICES, max_length=100)
     mother_tongue=models.CharField(choices=LANGUAGE_CHOICES, max_length=100)
     religion=models.CharField(choices=RELIGION_CHOICES,max_length=100)
     Education=models.CharField(choices=EDUCATION_CHOICES,max_length=100)
-    country=models.CharField(max_length=200,default='India')
     native_place=models.CharField(max_length=200,default='Kerala')
     location=models.CharField(max_length=200,default='kozhikode')
     profession=models.CharField(max_length=200,default='freelancer')
     family_status=models.CharField(choices=FAMILY_STATUS,max_length=100)
     family_values=models.CharField(choices=FAMILY_VALUES,max_length=100)
     
+    def __str__(self):
+        return self.user
+    
 class ProfilePicture(models.Model):
     user = models.ForeignKey(User, related_name='profile_picture', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='profilePictures/',null=True, blank=True)
+    
+    def __str__(self):
+        return self.user
+    
+class UserMobileOTP(models.Model):
+    user=models.OneToOneField(User, related_name='user_mobile_otp', on_delete=models.CASCADE)
+    mobile=models.OneToOneField(UserInfo, related_name='user_info_mobile_otp', on_delete=models.CASCADE)
+    otp=models.IntegerField(blank=True, null=True)
+    otp_verified=models.BooleanField(default=False)
+    
+    def __str__(self):
+        return self.user
+    
+    
     
     
         

@@ -42,7 +42,7 @@ class UserInfoModelAdmin(admin.ModelAdmin):
  
 @admin.register(UserPreference)
 class UserPreferenceModelAdmin(admin.ModelAdmin):
- list_display = ['id', 'user', 'date_of_birth', 'height', 'weight', 'marital_status', 'mother_tongue', 'religion', 'Education', 'country', 'native_place', 'location', 'profession', 'family_status', 'family_values']
+ list_display = ['id', 'user', 'date_of_birth', 'height', 'weight', 'marital_status', 'mother_tongue', 'religion', 'Education', 'native_place', 'location', 'profession', 'family_status', 'family_values']
  
  
  
