@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { Typography, TextField, Button, Box, Alert, CircularProgress } from "@mui/material";
 import { NavLink,useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { useLoginUserMutation } from "../../../services/userAuthApi";
+import {useLoginUserMutation } from "../../../services/userAuthApi";
 import { getToken, storeToken } from "../../../services/LocalStorageService";
 import { setUserToken } from "../../../features/authSlice";
 import { useEffect } from "react";
+import { setUserInfo } from "../../../features/userSlice";
 
 
 const UserLogin = () =>{
@@ -28,6 +29,10 @@ const UserLogin = () =>{
             storeToken(res.data.token)
             let {access_token} = getToken()
             dispatch(setUserToken ({access_token: access_token}))
+            dispatch(setUserInfo({
+                is_phone_verified:res.data.is_phone_verified,
+                is_preferences:res.data.is_preferences
+              }))
             document.getElementById('login-form').reset()
             navigate('/userinfo') 
         }  
@@ -38,7 +43,8 @@ const UserLogin = () =>{
     useEffect(() => {
         dispatch(setUserToken({access_token: access_token}))
     }, [access_token, dispatch] )
-    
+
+
     return <>
      <Box component='form' noValidate sx={{mt:2}} id='login-form' onSubmit={handleSubmit}>
         <TextField margin='normal' required fullWidth id='email' name='email' label='Email Address' />

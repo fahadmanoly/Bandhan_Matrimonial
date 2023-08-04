@@ -13,10 +13,13 @@ import UserInfo from './components/pages/profile/UserInfo';
 import SendOTP from './components/pages/profile/SendOTP';
 import VerifyOTP from './components/pages/profile/VerifyOTP';
 import UserPreferences from './components/pages/profile/UserPreferences';
+import UserHome from './components/pages/profile/UserHome';
 
 
 function App() {
   const {access_token} = useSelector(state => state.auth)
+  const {is_phone_verified,is_preferences} = useSelector(state => state.user)
+
   return (
     <BrowserRouter> 
       <Routes>
@@ -26,11 +29,11 @@ function App() {
           <Route path='login' element={!access_token ? <LoginReg /> : <Navigate to="/userinfo" />} />
           <Route path='forgotpassword' element={<ForgotPassword />} />
           <Route path='api/user/resetpassword/:id/:token' element={<ResetPassword />} />
-          <Route path='userinfo' element={access_token ? <UserInfo /> : <Navigate to="/login" />} />
+          <Route path='userinfo' element={is_phone_verified ===true ? (is_preferences===true?<Navigate to="/userhome" />:<Navigate to="/userpreference" />):<UserInfo/>} />
           <Route path='sendotp' element={access_token ? <SendOTP /> : <Navigate to="/login" />} />
           <Route path='verifyotp' element={access_token ? <VerifyOTP /> : <Navigate to="/login" />} />
           <Route path='userpreference' element={<UserPreferences />} />
-
+          <Route path='userhome' element={<UserHome />} />
 
         </Route> 
         <Route path='/userprofile' element={access_token ? <UserProfile /> : <Navigate to="/login" />} />

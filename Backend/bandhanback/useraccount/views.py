@@ -107,19 +107,12 @@ class UserLoginView(APIView):
             user = authenticate(email=email, password=password)
             if user is not None:
                 token = get_tokens_for_user(user)
-                return Response({'token':token, 'msg':'Login Successful'},status=status.HTTP_200_OK)
+                data = User.objects.get(email = user)
+                return Response({'token':token,'is_phone_verified':data.is_phone_verified,'is_preferences':data.is_preferences, 'msg':'Login Successful'},status=status.HTTP_200_OK)
             else:
                 return Response({'errors':{'non_field_errors':['Email or Password is not valid']}},status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-    
-
-class UserProfileView(APIView):
-    renderer_classes = [UserRenderer]
-    permission_classes = [IsAuthenticated]
-    def get(self,request,format=None):
-        serializer = UserProfileSerializer(request.user)
-        return Response(serializer.data,status=status.HTTP_200_OK)
-    
+      
     
 class UserChangePasswordView(APIView):
     renderer_classes = [UserRenderer]
@@ -180,7 +173,33 @@ class UserPreferenceView(APIView):
             return Response({'msg':'Personal Choices for a Preferred Partner has been added'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-        
+class UserProfileView(APIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    def get(self,request,format=None):
+        user_id = request.user.id
+        user_info = UserInfo.objects.get(user=user_id)
+        serializer1 = UserProfileSerializer(request.user)
+        serializer2 = UserInfoSerializer(user_info)
+        return Response({'user':serializer1.data,'user_info':serializer2.data},status=status.HTTP_200_OK)   
+    
+    
+class UserMatchView(APIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    def get(self,request,format=None):
+        user_id=request.user.id
+        user = UserInfo.objects.get(user=user_id)
+        gender = user.gender
+        if gender == 'Male':
+            data = UserInfo.objects.filter(gender='Female')
+            serializer = UserInfoSerializer(data,many=True)
+            return Response(serializer.data,status=status.HTTP_200_OK) 
+        else:
+            data = UserInfo.objects.filter(gender='Male')
+            serializer = UserInfoSerializer(data,many=True)
+            return Response(serializer.data,status=status.HTTP_200_OK) 
+          
 
     
      

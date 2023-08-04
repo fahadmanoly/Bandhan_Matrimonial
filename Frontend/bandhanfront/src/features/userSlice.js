@@ -5,6 +5,8 @@ const initialState = {
   email:"",
   name:"",
   id:"",
+  is_phone_verified:"",
+  is_preferences:""
 }
 
 export const userSlice = createSlice({
@@ -15,11 +17,15 @@ export const userSlice = createSlice({
         state.email = action.payload.email
         state.name = action.payload.name
         state.id = action.payload.id
+        state.is_preferences = action.payload.is_preferences
+        state.is_phone_verified = action.payload.is_phone_verified
     },
     unsetUserInfo:(state,action) => {
         state.email = action.payload.email
         state.name = action.payload.name
         state.id = action.payload.id
+        state.is_preferences = action.payload.is_preferences
+        state.is_phone_verified = action.payload.is_phone_verified
     },
     
   },

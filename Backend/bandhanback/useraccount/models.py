@@ -151,7 +151,7 @@ class UserInfo(models.Model):
     about_me=models.CharField(max_length=2000,null=True,blank=True)
     
     def __str__(self):
-        return self.user
+        return self.user.name
     
     
 class UserPreference(models.Model):
@@ -170,7 +170,7 @@ class UserPreference(models.Model):
     family_values=models.CharField(choices=FAMILY_VALUES,max_length=100)
     
     def __str__(self):
-        return self.user
+        return self.user.name
     
 class ProfilePicture(models.Model):
     user = models.ForeignKey(User, related_name='profile_picture', on_delete=models.CASCADE)

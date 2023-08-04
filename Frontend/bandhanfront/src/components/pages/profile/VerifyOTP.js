@@ -32,7 +32,7 @@ const VerifyOTP = () => {
       setServerError({})
       setServerMsg(res.data)
       document.getElementById('verifyotp-form').reset()
-      //navigate('/userpreference')
+      navigate('/userpreference')
     }
 
   };

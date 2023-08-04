@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { unsetUserToken } from "../../../features/authSlice";
 import { useGetLoggedUserQuery } from "../../../services/userAuthApi";
 import { setUserInfo, unsetUserInfo } from "../../../features/userSlice";
+import { useSelector } from "react-redux/es/hooks/useSelector";
 
 
 
@@ -26,6 +27,9 @@ const UserProfile = () => {
             setUserData({
                 email:data.email,
                 name:data.name,
+                id:data.id,
+                is_phone_verified:data.is_phone_verified,
+                is_preferences:data.is_preferences
             })
         }
     }, [data, isSuccess])
@@ -35,10 +39,15 @@ const UserProfile = () => {
         if(data && isSuccess){
             dispatch(setUserInfo({
                 email:data.email,
-                name:data.name
+                name:data.name,
+                id:data.id,
+                is_phone_verified:data.is_phone_verified,
+                is_preferences:data.is_preferences
             }))
         }
     }, [data, isSuccess, dispatch])
+
+
 
     
     const handleLogout = () => {
