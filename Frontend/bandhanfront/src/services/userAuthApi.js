@@ -143,12 +143,28 @@ export const userAuthApi = createApi({
             }
         }
     }),
+
+
+    ProfilePicture: builder.mutation({
+        query:({FormData, access_token }) => {
+            return{
+                url: 'profilepicture/',
+                method:'POST',
+                body:FormData,
+                headers:{
+                    'authorization':`Bearer ${access_token}`,
+                }
+            }
+           
+        } 
+    }),
     
 
 
     }),
   })
 
-export const { useRegisterUserMutation, useLoginUserMutation, useGetLoggedUserQuery, useChangeUserPasswordMutation, useForgotPasswordMutation, useResetPasswordMutation, useUserInfoMutation, useSendOTPMutation, useVerifyOTPMutation, useUserPreferenceMutation} = userAuthApi 
+export const { useRegisterUserMutation, useLoginUserMutation, useGetLoggedUserQuery, useChangeUserPasswordMutation, useForgotPasswordMutation, useResetPasswordMutation, useUserInfoMutation, useSendOTPMutation, useVerifyOTPMutation, useUserPreferenceMutation, useProfilePictureMutation} = userAuthApi 
+
 
 

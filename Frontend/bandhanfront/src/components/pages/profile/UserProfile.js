@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, CssBaseline, Grid, Typography } from "@mui/material";
+import { Button, CssBaseline, Grid, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ChangePassword from "../auth/ChangePassword";
 import { getToken, removeToken } from "../../../services/LocalStorageService";
@@ -16,6 +16,7 @@ const UserProfile = () => {
     const dispatch = useDispatch()
     const {access_token} = getToken()
     const {data, isSuccess} = useGetLoggedUserQuery(access_token)
+    console.log("befroe user profile",data)
     const[userData, setUserData] = useState({
         email:"",
         name:""
@@ -25,11 +26,11 @@ const UserProfile = () => {
     useEffect(() => {
         if(data && isSuccess){
             setUserData({
-                email:data.email,
-                name:data.name,
-                id:data.id,
-                is_phone_verified:data.is_phone_verified,
-                is_preferences:data.is_preferences
+                email:data.user.email,
+                name:data.user.name,
+                id:data.user.id,
+                is_phone_verified:data.user.is_phone_verified,
+                is_preferences:data.user.is_preferences
             })
         }
     }, [data, isSuccess])
@@ -38,16 +39,17 @@ const UserProfile = () => {
     useEffect(() => {
         if(data && isSuccess){
             dispatch(setUserInfo({
-                email:data.email,
-                name:data.name,
-                id:data.id,
-                is_phone_verified:data.is_phone_verified,
-                is_preferences:data.is_preferences
+                email:data.user.email,
+                name:data.user.name,
+                id:data.user.id,
+                is_phone_verified:data.user.is_phone_verified,
+                is_preferences:data.user.is_preferences
             }))
         }
     }, [data, isSuccess, dispatch])
 
-
+    const UserData = useSelector(state => state.user)
+    console.log("user profile after",UserData)
 
     
     const handleLogout = () => {
@@ -56,14 +58,26 @@ const UserProfile = () => {
         removeToken()
         navigate('/login') 
     }
+
+    const handleClick = () => {
+        navigate('/userhome');
+    }
+
     return <>
         <CssBaseline />
         <Grid container>
-            <Grid item sm={4} sx={{backgroundColor:"gray", p:5, color: "white"}}>
-                <h1>User Home Page</h1>
-                <Typography variant="h5">Email: {userData.email}</Typography>
+            <Grid item sm={4} sx={{backgroundColor:"#6d1b7b", p:5, color: "white", height:370, marginTop:4}}>
+                
                 <Typography variant="h6">Name: {userData.name}</Typography>
-                <Button variant="contained" color="warning" size="large" onClick={handleLogout} sx={{mt:4}}>Logout</Button>
+                <Typography variant="h6">Email: {userData.email}</Typography>
+                
+                <Box>
+                <Button variant="contained" color="warning" size="medium" onClick={handleLogout} sx={{mt:4}}>Logout</Button>
+                </Box>
+                <Box>
+                <Button variant="contained" color="primary" size="large" onClick={handleClick} sx={{mt:4}}>Home</Button>
+                </Box>
+
             </Grid>
             <Grid item sm={8}>
                 <ChangePassword />

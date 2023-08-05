@@ -130,6 +130,10 @@ STATIC_URL = 'static/'
 #STATICFILES_DIRS = [os.path.join(BASE_DIR,'build/static')]
 #STATIC_ROOT=os.path.join(BASE_DIR,'static')
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+MEDIA_URL = '/media/'
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',),

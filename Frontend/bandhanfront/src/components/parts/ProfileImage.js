@@ -5,17 +5,17 @@ const ProfileImage = () => {
   const [profileImageUrl, setProfileImageUrl] = useState('');
 
   // Fetch the profile image URL from the backend (replace 'backend-url' with your actual backend endpoint)
-  // useEffect(() => {
-  //   fetch('backend-url/profile-image')
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       // Assuming your backend returns an object with 'imageUrl' field containing the URL
-  //       setProfileImageUrl(data.imageUrl);
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error fetching profile image:', error);
-  //     });
-  // }, []);
+  useEffect(() => {
+    fetch('http://127.0.0.1:8000/media/profilePictures/Bollywood-hero-Zayed-Khan.jpg.jpg')
+      .then((response) => response.json())
+      .then((data) => {
+        // Assuming your backend returns an object with 'imageUrl' field containing the URL
+        setProfileImageUrl(data.imageUrl);
+      })
+      .catch((error) => {
+        console.error('Error fetching profile image:', error);
+      });
+  }, []);
 
   return (
     <Box sx={{ width:'70%', maxWidth:'250px', height:'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px', border: '1px solid #ccc', borderRadius: '4px', marginTop:8}}>

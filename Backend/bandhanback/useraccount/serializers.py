@@ -1,7 +1,4 @@
-from sys import exception
-from urllib import request
-from wsgiref.validate import validator
-from xml.dom import ValidationErr
+from dataclasses import field
 from rest_framework.validators import ValidationError
 from rest_framework import serializers
 from .models import *
@@ -135,6 +132,14 @@ class ResetPasswordSerializer(serializers.Serializer):
         except DjangoUnicodeDecodeError as identifier:
             PasswordResetTokenGenerator().check_token(user,token)
             raise ValidationError("Token is not valid")
+        
+
+        
+class ProfilePictureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProfilePicture
+        fields = '__all__'
+        
         
             
 

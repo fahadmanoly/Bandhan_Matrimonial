@@ -177,7 +177,7 @@ class ProfilePicture(models.Model):
     image = models.ImageField(upload_to='profilePictures/',null=True, blank=True)
     
     def __str__(self):
-        return self.user
+        return self.user.name
     
 class UserMobileOTP(models.Model):
     user=models.OneToOneField(User, related_name='user_mobile_otp', on_delete=models.CASCADE)

@@ -1,4 +1,5 @@
-from useraccount.serializers import UserRegistrationSerializer,UserLoginSerializer,UserProfileSerializer,UserChangePasswordSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, UserInfoSerializer, UserMobileOTPSerializer, UserPreferenceSerializer
+from useraccount.serializers import UserRegistrationSerializer,UserLoginSerializer,UserProfileSerializer,UserChangePasswordSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, UserInfoSerializer, UserMobileOTPSerializer, UserPreferenceSerializer, ProfilePictureSerializer
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -199,9 +200,23 @@ class UserMatchView(APIView):
             data = UserInfo.objects.filter(gender='Male')
             serializer = UserInfoSerializer(data,many=True)
             return Response(serializer.data,status=status.HTTP_200_OK) 
+        
+class ProfilePictureView(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [JWTAuthentication]
+    parser_classes = [MultiPartParser]
+    def post(self, request, format=None):
+        user=request.user
+        data=request.data
+        data['user'] = user.id
+        serializer = ProfilePictureSerializer(data=data)
+        if serializer.is_valid():
+            user = request.user 
+            profile_picture = serializer.save(user=user)
+            return Response(ProfilePictureSerializer(profile_picture).data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
           
 
-    
      
         
     

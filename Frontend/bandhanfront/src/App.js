@@ -36,7 +36,7 @@ function App() {
           <Route path='userhome' element={<UserHome />} />
 
         </Route> 
-        <Route path='/userprofile' element={access_token ? <UserProfile /> : <Navigate to="/login" />} />
+        <Route path='/userprofile' element={<UserProfile />} />
 
 
         <Route path='*' element={<h1>Error:404 Page not found !!</h1>} />

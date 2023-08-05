@@ -38,19 +38,21 @@ const UserInfo = () => {
 
   //Bringing Data from Redux store and setting to access
   const { data, isSuccess } = useGetLoggedUserQuery(access_token);
+  console.log("user info before",data)
   useEffect(() => {
     if (data && isSuccess) {
       dispatch(setUserInfo({
-        email: data.email,
-        name: data.name,
-        id: data.id,
-        is_phone_verified:data.is_phone_verified,
-        is_preferences:data.is_preferences
+        email: data.user.email,
+        name: data.user.name,
+        id: data.user.id,
+        is_phone_verified:data.user.is_phone_verified,
+        is_preferences:data.user.is_preferences
 
       }))
     }
   }, [data, isSuccess, dispatch])
   const UserData = useSelector(state => state.user)
+  console.log("user info after",UserData)
 
   const handleSubmit = async (event) => {
     event.preventDefault();
