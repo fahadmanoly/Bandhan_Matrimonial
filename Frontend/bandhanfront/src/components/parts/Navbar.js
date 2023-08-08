@@ -34,6 +34,11 @@ const Navbar = () => {
     handleMenuClose();
   };
 
+  const handleProfilePicture = () => {
+    navigate('/profilepicture');
+    handleMenuClose();
+  };
+
   return (
     <AppBar position="static" color="secondary">
       <Container maxWidth="xl" xl={12}>
@@ -70,6 +75,7 @@ const Navbar = () => {
                   >
                     <MenuItem onClick={handleMenuClose}>Update Profile</MenuItem>
                     <MenuItem onClick={handleMenuClose}>User Account</MenuItem>
+                    <MenuItem onClick={handleProfilePicture}>Upload Image</MenuItem> 
                     <MenuItem onClick={handlePasswordChange}>Change Password</MenuItem> 
                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                   </Menu>

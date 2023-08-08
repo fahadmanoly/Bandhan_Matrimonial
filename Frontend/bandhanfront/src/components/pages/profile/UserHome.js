@@ -12,8 +12,12 @@ import { setUserInfo } from "../../../features/userSlice";
 const UserHome = ({}) => {
   const {access_token} = getToken()
   const dispatch = useDispatch()
+
   const { data, isSuccess } = useGetLoggedUserQuery(access_token);
   console.log("userhome before",data)
+  // const { picture } = useGetLoggedUserPictureQuery(access_token);
+  // console.log("userhome before",picture)
+  
   useEffect(() => {
     if (data && isSuccess) {
       dispatch(setUserInfo({
@@ -53,6 +57,7 @@ const UserHome = ({}) => {
         </Grid>
         
       <Grid item xs={3}>
+      {/* <img src={picture.image} alt="Profile" /> */}
         <ProfileImage sx={{ width: '100%', height: '300px' }} /> 
       </Grid>
         

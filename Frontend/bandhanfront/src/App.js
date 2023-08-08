@@ -14,6 +14,8 @@ import SendOTP from './components/pages/profile/SendOTP';
 import VerifyOTP from './components/pages/profile/VerifyOTP';
 import UserPreferences from './components/pages/profile/UserPreferences';
 import UserHome from './components/pages/profile/UserHome';
+import UploadImage from './components/parts/UploadImage';
+import SearchResults from './components/pages/matches/SearchResults';
 
 
 function App() {
@@ -34,6 +36,9 @@ function App() {
           <Route path='verifyotp' element={access_token ? <VerifyOTP /> : <Navigate to="/login" />} />
           <Route path='userpreference' element={<UserPreferences />} />
           <Route path='userhome' element={<UserHome />} />
+          <Route path='profilepicture' element={ access_token ? <UploadImage /> : <Navigate to="/login" />} />
+          <Route path="/search-results/:age_min/:age_max/:religion/:mother_tongue" element={<SearchResults />} />
+
 
         </Route> 
         <Route path='/userprofile' element={<UserProfile />} />

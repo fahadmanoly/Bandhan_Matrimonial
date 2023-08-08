@@ -6,6 +6,8 @@ from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
 from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate
+from datetime import date
+from django.db.models import Q
 from useraccount.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
@@ -183,6 +185,15 @@ class UserProfileView(APIView):
         serializer1 = UserProfileSerializer(request.user)
         serializer2 = UserInfoSerializer(user_info)
         return Response({'user':serializer1.data,'user_info':serializer2.data},status=status.HTTP_200_OK)   
+ 
+class UserImageView(APIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    def get(self,request,format=None):
+        user_id = request.user.id
+        user_image = ProfilePicture.objects.filter(user=user_id)
+        serializer = ProfilePictureSerializer(user_image, many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)   
     
     
 class UserMatchView(APIView):
@@ -216,6 +227,59 @@ class ProfilePictureView(APIView):
             return Response(ProfilePictureSerializer(profile_picture).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
           
+
+
+
+@api_view(['GET'])
+def search_matches(request):
+    min_age = request.query_params.get('age_min', '')
+    max_age = request.query_params.get('age_max', '')
+    religion = request.query_params.get('religion')
+    mother_tongue = request.query_params.get('mother_tongue', '')
+    #native_place = request.query_params.get('native_place', '')
+
+    users_info = UserInfo.objects.all()
+
+    if min_age:
+        min_birth_year = date.today().year - int(min_age)
+        users_info = users_info.filter(date_of_birth__year__lte=min_birth_year)
+
+    if max_age:
+        max_birth_year = date.today().year - int(max_age) - 1
+        users_info = users_info.filter(date_of_birth__year__gt=max_birth_year)
+
+    if religion:
+        users_info = users_info.filter(religion__icontains=religion)
+
+    # if native_place:
+    #     users_info = users_info.filter(native_place__icontains=native_place)
+
+    if mother_tongue:
+        users_info = users_info.filter(mother_tongue__icontains=mother_tongue)
+
+    users_info = users_info.prefetch_related('user__profile_picture')
+    
+    serialized_data = []
+    for user_info in users_info:
+        profile_picture = user_info.user.profile_picture.all().first()
+        serialized_data.append({
+            'id': user_info.user.id,
+            'name': user_info.user.name,
+            'email': user_info.user.email,
+            'date_of_birth': user_info.date_of_birth,
+            'height': user_info.height,
+            'weight': user_info.weight,
+            'religion': user_info.religion,
+            'native_place': user_info.native_place,
+            'mother_tongue': user_info.mother_tongue,
+            'profile_picture': profile_picture.image.url if profile_picture else None
+        })
+
+    return Response(serialized_data)
+
+    # users = User.objects.filter(UserInfo__religion__icontains =religion, UserInfo__mother_tongue__icontains =mother_tongue, UserInfo__native_place__icontains= native_place)
+
+    
 
      
         

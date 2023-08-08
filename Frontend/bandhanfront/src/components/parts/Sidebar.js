@@ -1,7 +1,22 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Box, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button } from '@mui/material';
+import { useSearchUsersQuery } from '../../services/userAuthApi';
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
+  const navigate = useNavigate()
+  const [ageMin, setAgeMin] = useState('');
+  const [ageMax, setAgeMax] = useState('');
+  const [religion, setReligion] = useState('');
+  const [motherTongue, setMotherTongue] = useState('');
+ 
+  
+
+  const handleSearch = () => {
+    navigate(`/search-results/${ageMin}/${ageMax}/${religion}/${motherTongue}`);
+  };
+
+
   return <>
 
         <Box sx={{width: 250, position: 'fixed', top: 64, height: 'calc(100vh - 64px)', backgroundColor: '#f0f0f0' }}>
@@ -9,14 +24,21 @@ const Sidebar = () => {
             <Typography variant="h6" gutterBottom sx={{fontSize:'1rem', marginTop:2, marginBottom:0, ml:2}}>
                Search
             </Typography>
+{/* 
+            <input type='number' placeholder='Min Age' value={ageMin} onChange={(e) =>setAgeMin(e.target.value)}/> 
+            <input type="number" placeholder="Max Age" value={ageMax} onChange={(e) => setAgeMax(e.target.value)}/> */}
 
-            <TextField label="Search Field 1"  margin="normal" size="small" sx={{fontSize:'0.875rem', marginTop:1, mr:2, ml:2}} />
-            <TextField label="Search Field 2"  margin="normal" size="small" sx={{fontSize:'0.875rem', marginTop:2, mr:2, ml:2}} />
-            <TextField label="Search Field 3"  margin="normal" size="small" sx={{fontSize:'0.875rem', marginTop:2, mr:2, ml:2}} />
+
+
+            <TextField label="Age From" value={ageMin} onChange={(e) =>setAgeMin(e.target.value)}  margin="normal" size="small" sx={{fontSize:'0.875rem', marginTop:1, mr:2, ml:2}} />
+            <TextField label="Age To" value={ageMax} onChange={(e) => setAgeMax(e.target.value)}  margin="normal" size="small" sx={{fontSize:'0.875rem', marginTop:2, mr:2, ml:2}} />
+            <TextField label="Religion" value={religion} onChange={(e) => setReligion(e.target.value)}  margin="normal" size="small" sx={{fontSize:'0.875rem', marginTop:2, mr:2, ml:2}} />
+            <TextField label="Mother Tongue" value={motherTongue} onChange={(e) => setMotherTongue(e.target.value)}  margin="normal" size="small" sx={{fontSize:'0.875rem', marginTop:2, mr:2, ml:2}} />
+
 
       
             <Box sx={{display:'flex', justifyContent:'center'}}>
-              <Button variant="contained" sx={{ marginTop: 1, backgroundColor:"#6d1b7b"}}>
+              <Button variant="contained" sx={{ marginTop: 1, backgroundColor:"#6d1b7b"}} onClick={handleSearch}>
                  Search
               </Button>
             </Box>

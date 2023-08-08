@@ -46,6 +46,29 @@ export const userAuthApi = createApi({
         }
     }),
 
+    getLoggedUserPicture: builder.query({
+        query:(access_token)=>{
+            return{
+                url:'image/',
+                method:'GET',
+                headers:{
+                    'authorization': `Bearer ${access_token}`,
+                    'Content-type': 'application/json',
+                }
+            }
+        }
+    }),
+
+
+
+    searchUsers: builder.query({
+        query:(params)=> 
+        `search_matches/?age_min=${params.age_min}&age_max=${params.age_max}&religion=${params.religion}&mother_tongue=${params.mother_tongue}`,     
+
+            }),
+
+    
+
     changeUserPassword: builder.mutation({
         query:({ actualData, access_token }) => {
             return{
@@ -146,11 +169,11 @@ export const userAuthApi = createApi({
 
 
     ProfilePicture: builder.mutation({
-        query:({FormData, access_token }) => {
+        query:({formData, access_token }) => {
             return{
                 url: 'profilepicture/',
                 method:'POST',
-                body:FormData,
+                body:formData,
                 headers:{
                     'authorization':`Bearer ${access_token}`,
                 }
@@ -164,7 +187,7 @@ export const userAuthApi = createApi({
     }),
   })
 
-export const { useRegisterUserMutation, useLoginUserMutation, useGetLoggedUserQuery, useChangeUserPasswordMutation, useForgotPasswordMutation, useResetPasswordMutation, useUserInfoMutation, useSendOTPMutation, useVerifyOTPMutation, useUserPreferenceMutation, useProfilePictureMutation} = userAuthApi 
+export const { useRegisterUserMutation, useLoginUserMutation, useGetLoggedUserQuery, useChangeUserPasswordMutation, useForgotPasswordMutation, useResetPasswordMutation, useUserInfoMutation, useSendOTPMutation, useVerifyOTPMutation, useUserPreferenceMutation, useProfilePictureMutation, useGetLoggedUserPictureQuery, useSearchUsersQuery} = userAuthApi 
 
 
 

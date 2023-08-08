@@ -15,6 +15,7 @@ const UserProfile = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const {access_token} = getToken()
+    
     const {data, isSuccess} = useGetLoggedUserQuery(access_token)
     console.log("befroe user profile",data)
     const[userData, setUserData] = useState({

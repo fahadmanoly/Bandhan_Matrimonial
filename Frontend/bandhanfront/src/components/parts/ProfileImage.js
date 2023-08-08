@@ -1,16 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Avatar, Typography } from '@mui/material';
+import { getToken } from '../../services/LocalStorageService';
 
 const ProfileImage = () => {
+  const {access_token} = getToken()
+  const [profilePictures, setProfilePictures] = useState([]);
   const [profileImageUrl, setProfileImageUrl] = useState('');
 
   // Fetch the profile image URL from the backend (replace 'backend-url' with your actual backend endpoint)
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/media/profilePictures/Bollywood-hero-Zayed-Khan.jpg.jpg')
+    fetch('http://127.0.0.1:8000/api/user/image/', {
+      headers:{
+        Authorization: `Bearer ${access_token}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         // Assuming your backend returns an object with 'imageUrl' field containing the URL
-        setProfileImageUrl(data.imageUrl);
+        setProfilePictures(data);
+        if (data.length > 0) {
+          setProfileImageUrl(data[0].image);
+        }
       })
       .catch((error) => {
         console.error('Error fetching profile image:', error);
@@ -18,14 +28,14 @@ const ProfileImage = () => {
   }, []);
 
   return (
-    <Box sx={{ width:'70%', maxWidth:'250px', height:'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px', border: '1px solid #ccc', borderRadius: '4px', marginTop:8}}>
+    <Box sx={{ width:'90%', maxWidth:'250px', height:'90%', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px', border: '1px solid #ccc', borderRadius: '4px', marginTop:8}}>
       {profileImageUrl ? (
-        <Avatar alt="Profile Image" src={profileImageUrl} sx={{ width: 80, height: 80, marginTop:4 }} />
+        <Avatar alt="Profile Image" src={`http://127.0.0.1:8000${profileImageUrl}`} sx={{ width: '100%', height: '100%', borderRadius:0}} />
       ) : (
-        <Avatar sx={{ width: 80, height: 80, marginTop:4 }} /> // Fallback if image URL is not available
+        <Avatar sx={{ width: 100, height: 100, marginTop:4 }} /> // Fallback if image URL is not available
       )}
-      <Typography variant="h6">John Doe</Typography>
-      <Typography variant="body2">john.doe@example.com</Typography>
+      {/* <Typography variant="h6">John Doe</Typography>
+      <Typography variant="body2">john.doe@example.com</Typography> */}
     </Box>
   );
 };

@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
 
@@ -187,6 +188,11 @@ class UserMobileOTP(models.Model):
     
     def __str__(self):
         return self.user
+    
+
+    
+
+    
     
     
     

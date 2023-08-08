@@ -51,6 +51,7 @@ const UserPreferences = () => {
     }, [data, isSuccess, dispatch])
     const UserData = useSelector(state => state.user)
     console.log("user preferences after",UserData)
+    
     const handleSubmit = async (event) =>{
       event.preventDefault();
       const formdata = new FormData(event.currentTarget);
