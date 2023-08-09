@@ -187,7 +187,7 @@ class UserMobileOTP(models.Model):
     otp_verified=models.BooleanField(default=False)
     
     def __str__(self):
-        return self.user
+        return self.user.name
     
 
     

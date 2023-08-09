@@ -95,8 +95,9 @@ class UserRegistrationView(APIView):
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
-            token = get_tokens_for_user(user)
-            return Response({'token':token, 'msg':'Registration Successful'},status=status.HTTP_201_CREATED)
+            # token = get_tokens_for_user(user)
+            # return Response({'token':token, 'msg':'Registration Successful'},status=status.HTTP_201_CREATED)
+            return Response({'msg':'Registration Successful'},status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 #User Login    
@@ -229,14 +230,18 @@ class ProfilePictureView(APIView):
           
 
 
+def calculate_age(birthdate):
+    today = date.today()
+    age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+    return age
+
 
 @api_view(['GET'])
 def search_matches(request):
     min_age = request.query_params.get('age_min', '')
     max_age = request.query_params.get('age_max', '')
     religion = request.query_params.get('religion')
-    mother_tongue = request.query_params.get('mother_tongue', '')
-    #native_place = request.query_params.get('native_place', '')
+    gender = request.query_params.get('gender', '')
 
     users_info = UserInfo.objects.all()
 
@@ -251,11 +256,8 @@ def search_matches(request):
     if religion:
         users_info = users_info.filter(religion__icontains=religion)
 
-    # if native_place:
-    #     users_info = users_info.filter(native_place__icontains=native_place)
-
-    if mother_tongue:
-        users_info = users_info.filter(mother_tongue__icontains=mother_tongue)
+    if gender:
+        users_info = users_info.filter(gender__icontains=gender)
 
     users_info = users_info.prefetch_related('user__profile_picture')
     
@@ -266,7 +268,8 @@ def search_matches(request):
             'id': user_info.user.id,
             'name': user_info.user.name,
             'email': user_info.user.email,
-            'date_of_birth': user_info.date_of_birth,
+            'gender': user_info.gender,
+            'date_of_birth': calculate_age(user_info.date_of_birth),
             'height': user_info.height,
             'weight': user_info.weight,
             'religion': user_info.religion,

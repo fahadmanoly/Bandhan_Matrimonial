@@ -7,13 +7,13 @@ import { useSearchUsersQuery } from '../../../services/userAuthApi';
 
 
 function SearchResults() {
-  const { age_min, age_max, religion, mother_tongue } = useParams();
+  const { age_min, age_max, religion, gender } = useParams();
 
   const { data:users, error, isLoading } = useSearchUsersQuery({
     age_min,
     age_max,
     religion,
-    mother_tongue,
+    gender,
   });
   
   if (isLoading) {
@@ -25,23 +25,26 @@ function SearchResults() {
   }
 
   const profilePictureStyle = {
-    width: '150px', 
-    height: '150px',
+    width: '200px', 
+    height: '200px',
     //borderRadius: '50%', 
     objectFit: 'cover', 
   };
+  console.log("profile picture is",users)
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
       {users.map((user) => (
-        <div key={user.id}>
-          <p>Name: {user.name}</p>
-          <p>Email: {user.email}</p>
-          <p>Date of Birth: {user.date_of_birth}</p>
-          
-          {user.profile_picture && (
-            <img style={profilePictureStyle} src={user.profile_picture} alt={`${user.name}'s profile`} />
-          )}
+        <div key={user.id} style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
+            <img
+            style={profilePictureStyle}
+            src={`http://127.0.0.1:8000${user.profile_picture}`}
+            alt={`${user.name}'s profile`}
+          />
+
+          <p>{user.name} , {user.date_of_birth} Years , {user.religion}</p>
+          {/* <p>{user.gender}     </p> */}
+         
         </div>
       ))}
     </div>

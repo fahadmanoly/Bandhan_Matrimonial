@@ -63,7 +63,7 @@ export const userAuthApi = createApi({
 
     searchUsers: builder.query({
         query:(params)=> 
-        `search_matches/?age_min=${params.age_min}&age_max=${params.age_max}&religion=${params.religion}&mother_tongue=${params.mother_tongue}`,     
+        `search_matches/?age_min=${params.age_min}&age_max=${params.age_max}&religion=${params.religion}&gender=${params.gender}`,     
 
             }),
 

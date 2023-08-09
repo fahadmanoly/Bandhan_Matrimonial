@@ -33,7 +33,7 @@ const Registration = () => {
         if(res.data){
             storeToken(res.data.token)
             document.getElementById('registration-form').reset()
-            navigate("/userinfo")
+            navigate("/login")
         }
         
         //Frontend error validation

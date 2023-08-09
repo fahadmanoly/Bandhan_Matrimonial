@@ -8,12 +8,12 @@ const Sidebar = () => {
   const [ageMin, setAgeMin] = useState('');
   const [ageMax, setAgeMax] = useState('');
   const [religion, setReligion] = useState('');
-  const [motherTongue, setMotherTongue] = useState('');
+  const [gender, setgender] = useState('');
  
   
 
   const handleSearch = () => {
-    navigate(`/search-results/${ageMin}/${ageMax}/${religion}/${motherTongue}`);
+    navigate(`/search-results/${ageMin}/${ageMax}/${religion}/${gender}`);
   };
 
 
@@ -29,11 +29,11 @@ const Sidebar = () => {
             <input type="number" placeholder="Max Age" value={ageMax} onChange={(e) => setAgeMax(e.target.value)}/> */}
 
 
-
+            <TextField label="Gender" value={gender} onChange={(e) => setgender(e.target.value)}  margin="normal" size="small" sx={{fontSize:'0.875rem', marginTop:2, mr:2, ml:2}} />
             <TextField label="Age From" value={ageMin} onChange={(e) =>setAgeMin(e.target.value)}  margin="normal" size="small" sx={{fontSize:'0.875rem', marginTop:1, mr:2, ml:2}} />
             <TextField label="Age To" value={ageMax} onChange={(e) => setAgeMax(e.target.value)}  margin="normal" size="small" sx={{fontSize:'0.875rem', marginTop:2, mr:2, ml:2}} />
             <TextField label="Religion" value={religion} onChange={(e) => setReligion(e.target.value)}  margin="normal" size="small" sx={{fontSize:'0.875rem', marginTop:2, mr:2, ml:2}} />
-            <TextField label="Mother Tongue" value={motherTongue} onChange={(e) => setMotherTongue(e.target.value)}  margin="normal" size="small" sx={{fontSize:'0.875rem', marginTop:2, mr:2, ml:2}} />
+            
 
 
       
