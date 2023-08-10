@@ -63,6 +63,27 @@ export const userAuthApi = createApi({
 
     searchUsers: builder.query({
         query:(params)=> 
+            // let queryString = '';
+
+            // if (params.age_min) {
+            //   queryString += `age_min=${params.age_min}&`;
+            // }
+    
+            // if (params.age_max) {
+            //   queryString += `age_max=${params.age_max}&`;
+            // }
+            // if (params.religion) {
+            //     queryString += `religion=${params.religion}&`;
+            //   }
+      
+            //   if (params.gender) {
+            //     queryString += `gender=${params.gender}&`;
+            //   }
+            //   return queryString ? `search_matches/?${queryString.slice(0, -1)}` : 'search_matches/';
+
+  
+            
+
         `search_matches/?age_min=${params.age_min}&age_max=${params.age_max}&religion=${params.religion}&gender=${params.gender}`,     
 
             }),

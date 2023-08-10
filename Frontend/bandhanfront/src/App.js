@@ -16,6 +16,7 @@ import UserPreferences from './components/pages/profile/UserPreferences';
 import UserHome from './components/pages/profile/UserHome';
 import UploadImage from './components/parts/UploadImage';
 import SearchResults from './components/pages/matches/SearchResults';
+import MatchDetails from './components/pages/matches/MatchDetails';
 
 
 function App() {
@@ -38,6 +39,8 @@ function App() {
           <Route path='userhome' element={<UserHome />} />
           <Route path='profilepicture' element={ access_token ? <UploadImage /> : <Navigate to="/login" />} />
           <Route path="/search-results/:age_min/:age_max/:religion/:gender" element={<SearchResults />} />
+          <Route path="/match-details/:userId" element={<MatchDetails />} />
+
 
 
         </Route> 

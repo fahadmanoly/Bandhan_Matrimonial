@@ -238,26 +238,26 @@ def calculate_age(birthdate):
 
 @api_view(['GET'])
 def search_matches(request):
+    gender = request.query_params.get('gender', '')
     min_age = request.query_params.get('age_min', '')
     max_age = request.query_params.get('age_max', '')
     religion = request.query_params.get('religion')
-    gender = request.query_params.get('gender', '')
-
+    
     users_info = UserInfo.objects.all()
-
-    if min_age:
+    
+    if min_age !='None':
         min_birth_year = date.today().year - int(min_age)
         users_info = users_info.filter(date_of_birth__year__lte=min_birth_year)
 
-    if max_age:
+    if max_age !='None':
         max_birth_year = date.today().year - int(max_age) - 1
         users_info = users_info.filter(date_of_birth__year__gt=max_birth_year)
 
-    if religion:
+    if religion != 'None':
         users_info = users_info.filter(religion__icontains=religion)
 
-    if gender:
-        users_info = users_info.filter(gender__icontains=gender)
+    if gender != 'None':
+        users_info = users_info.filter(gender__iexact=gender)
 
     users_info = users_info.prefetch_related('user__profile_picture')
     
@@ -277,10 +277,23 @@ def search_matches(request):
             'mother_tongue': user_info.mother_tongue,
             'profile_picture': profile_picture.image.url if profile_picture else None
         })
-
+    
     return Response(serialized_data)
 
-    # users = User.objects.filter(UserInfo__religion__icontains =religion, UserInfo__mother_tongue__icontains =mother_tongue, UserInfo__native_place__icontains= native_place)
+
+class MatchDetailsView(GenericAPIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    def post(self,request,match_id,format=None):
+        match_info = UserInfo.objects.filter(user=match_id)
+        match_preference = UserPreference.objects.filter(user=match_id)
+        match_picture = ProfilePicture.objects.filter(user=match_id).all()
+        serielaizer1 = UserInfoSerializer(match_info, many=True)
+        serielaizer2 = UserPreferenceSerializer(match_preference, many=True)
+        serielaizer3 = ProfilePictureSerializer(match_picture, many=True)
+        return Response({'match_info':serielaizer1.data, 'match_preference':serielaizer2.data, 'match_picture':serielaizer3.data},status=status.HTTP_200_OK)
+    
+
 
     
 

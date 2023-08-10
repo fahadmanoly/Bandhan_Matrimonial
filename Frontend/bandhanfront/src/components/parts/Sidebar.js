@@ -1,23 +1,37 @@
 import React, {useState} from 'react';
+import Snackbar from '@mui/material/Snackbar';
 import { Box, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button } from '@mui/material';
-import { useSearchUsersQuery } from '../../services/userAuthApi';
 import { useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
   const navigate = useNavigate()
+  const [gender, setGender] = useState('');
   const [ageMin, setAgeMin] = useState('');
   const [ageMax, setAgeMax] = useState('');
   const [religion, setReligion] = useState('');
-  const [gender, setgender] = useState('');
+  
+
  
   
 
   const handleSearch = () => {
-    navigate(`/search-results/${ageMin}/${ageMax}/${religion}/${gender}`);
+    let url = '/search-results/';
+
+    if (ageMin || ageMax || religion || gender) {
+      url += `${ageMin || 'None'}/${ageMax || 'None'}/${religion || 'None'}/${gender || 'None'}`;
+      navigate(url);
+    }else{
+      console.log("the url old is", url)
+    }
+   
   };
 
 
+
+
   return <>
+
+
 
         <Box sx={{width: 250, position: 'fixed', top: 64, height: 'calc(100vh - 64px)', backgroundColor: '#f0f0f0' }}>
       
@@ -29,7 +43,7 @@ const Sidebar = () => {
             <input type="number" placeholder="Max Age" value={ageMax} onChange={(e) => setAgeMax(e.target.value)}/> */}
 
 
-            <TextField label="Gender" value={gender} onChange={(e) => setgender(e.target.value)}  margin="normal" size="small" sx={{fontSize:'0.875rem', marginTop:2, mr:2, ml:2}} />
+            <TextField label="Gender" value={gender} onChange={(e) => setGender(e.target.value)}  margin="normal" size="small" sx={{fontSize:'0.875rem', marginTop:2, mr:2, ml:2}} />
             <TextField label="Age From" value={ageMin} onChange={(e) =>setAgeMin(e.target.value)}  margin="normal" size="small" sx={{fontSize:'0.875rem', marginTop:1, mr:2, ml:2}} />
             <TextField label="Age To" value={ageMax} onChange={(e) => setAgeMax(e.target.value)}  margin="normal" size="small" sx={{fontSize:'0.875rem', marginTop:2, mr:2, ml:2}} />
             <TextField label="Religion" value={religion} onChange={(e) => setReligion(e.target.value)}  margin="normal" size="small" sx={{fontSize:'0.875rem', marginTop:2, mr:2, ml:2}} />

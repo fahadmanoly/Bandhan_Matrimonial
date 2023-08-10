@@ -1,9 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-
+import { Typography, Grid } from '@mui/material';
 import { useSearchUsersQuery } from '../../../services/userAuthApi';
-
-
+import { Link } from 'react-router-dom';
 
 
 function SearchResults() {
@@ -25,30 +24,35 @@ function SearchResults() {
   }
 
   const profilePictureStyle = {
-    width: '200px', 
+    width: '100%', 
     height: '200px',
-    //borderRadius: '50%', 
-    objectFit: 'cover', 
+    // borderRadius: '50%', 
+    objectFit: 'contain',
   };
-  console.log("profile picture is",users)
+
 
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-      {users.map((user) => (
-        <div key={user.id} style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
-            <img
-            style={profilePictureStyle}
-            src={`http://127.0.0.1:8000${user.profile_picture}`}
-            alt={`${user.name}'s profile`}
-          />
 
-          <p>{user.name} , {user.date_of_birth} Years , {user.religion}</p>
-          {/* <p>{user.gender}     </p> */}
-         
-        </div>
-      ))}
-    </div>
+    <Grid container spacing={1}>
+   
+      {users.map((user) => (
+        <Grid item key={user.id} xs={12} sm={3} >
+          <Link to={{pathname:`/match-details/${user.id}`, state:{userData:user}}} style={{ textDecoration: 'none' }}>
+              <Grid key={user.id} style={{ border: '2px solid #ccc', margin: '10px', padding: '10px' }}>
+                <img style={profilePictureStyle} src={`http://127.0.0.1:8000${user.profile_picture}`} />
+     
+                <Typography variant="body2" component="div"> {user.name} , {user.gender} , {user.date_of_birth} Years Old,  {user.religion}</Typography>
+                {/* <Typography variant="body2" color="textSecondary"> Age: {user.date_of_birth} </Typography>
+                <Typography variant="body2" color="textSecondary"> Religion: {user.religion} </Typography> */}
+          
+              </Grid>
+          </Link>
+        </Grid>
+     ))}
+    </Grid>
   );
-}
+  }
+
+        
 
 export default SearchResults;
