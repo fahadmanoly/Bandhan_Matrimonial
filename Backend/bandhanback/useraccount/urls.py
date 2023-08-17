@@ -21,6 +21,5 @@ urlpatterns = [
     path('search_matches/', views.search_matches, name='search_matches'),
     path('match_details/<int:match_id>/', MatchDetailsView.as_view(), name='match_details'),
 
-
-
 ]
+

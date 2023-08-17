@@ -17,6 +17,8 @@ import UserHome from './components/pages/profile/UserHome';
 import UploadImage from './components/parts/UploadImage';
 import SearchResults from './components/pages/matches/SearchResults';
 import MatchDetails from './components/pages/matches/MatchDetails';
+import ConnectionRequest from './components/pages/matches/ConnectionRequest';
+import Payments from './components/pages/matches/Payments';
 
 
 function App() {
@@ -27,8 +29,8 @@ function App() {
     <BrowserRouter> 
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path='contact' element={<Contact />} />
+          <Route index element={!access_token ? <Home /> : <Navigate to = "userhome" />} />
+          {/* <Route path='contact' element={<Contact />} /> */}
           <Route path='login' element={!access_token ? <LoginReg /> : <Navigate to="/userinfo" />} />
           <Route path='forgotpassword' element={<ForgotPassword />} />
           <Route path='api/user/resetpassword/:id/:token' element={<ResetPassword />} />
@@ -39,12 +41,13 @@ function App() {
           <Route path='userhome' element={<UserHome />} />
           <Route path='profilepicture' element={ access_token ? <UploadImage /> : <Navigate to="/login" />} />
           <Route path="/search-results/:age_min/:age_max/:religion/:gender" element={<SearchResults />} />
-          <Route path="/match-details/:userId" element={<MatchDetails />} />
-
-
+          <Route path="/match-details/:match_id" element={<MatchDetails />} />
+          <Route path='connectionrequest' element={ access_token ? <ConnectionRequest /> : <Navigate to="/login" />} />
 
         </Route> 
         <Route path='/userprofile' element={<UserProfile />} />
+        <Route path='payments' element={ access_token ? <Payments /> : <Navigate to="/login" />} />
+
 
 
         <Route path='*' element={<h1>Error:404 Page not found !!</h1>} />

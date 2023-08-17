@@ -36,7 +36,6 @@ const UserPreferences = () => {
     
     //Bringing Data from Redux store and setting to access
     const {data, isSuccess} = useGetLoggedUserQuery(access_token);
-    console.log("user preference before",data)
     
     useEffect(() => {
       if(data && isSuccess){
@@ -50,7 +49,6 @@ const UserPreferences = () => {
         }
     }, [data, isSuccess, dispatch])
     const UserData = useSelector(state => state.user)
-    console.log("user preferences after",UserData)
     
     const handleSubmit = async (event) =>{
       event.preventDefault();

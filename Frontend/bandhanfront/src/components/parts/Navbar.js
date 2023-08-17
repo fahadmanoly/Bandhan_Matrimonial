@@ -51,9 +51,9 @@ const Navbar = () => {
               <Button component={NavLink} to='/' activeStyle={{ backgroundColor: '#6d1b7b' }} sx={{ color: 'white', textTransform: 'none' }}>Home</Button>
             </Grid>
 
-            <Grid item>
-              <Button component={NavLink} to='/contact' activeStyle={{ backgroundColor: '#6d1b7b' }} sx={{ color: 'white', textTransform: 'none' }}>Contact</Button>
-            </Grid>
+            {/* <Grid item>
+              <Button component={NavLink} to='/userhome' activeStyle={{ backgroundColor: '#6d1b7b' }} sx={{ color: 'white', textTransform: 'none' }}>Contact</Button>
+            </Grid> */}
 
             <Grid item>
               {access_token ? (
@@ -81,7 +81,7 @@ const Navbar = () => {
                   </Menu>
                 </>
               ) : (
-                <Button component={NavLink} to='/login' activeStyle={{ backgroundColor: '#6d1b7b' }} sx={{ color: 'white', textTransform: 'none' }}>Login</Button>
+                <Button component={NavLink} to='/login' activeStyle={{ backgroundColor: '#6d1b7b' }} sx={{ color: 'white', textTransform: 'none' }}>Sign UP/Sign IN</Button>
               )}
             </Grid>
           </Grid>

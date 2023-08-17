@@ -38,7 +38,6 @@ const UserInfo = () => {
 
   //Bringing Data from Redux store and setting to access
   const { data, isSuccess } = useGetLoggedUserQuery(access_token);
-  console.log("user info before",data)
   useEffect(() => {
     if (data && isSuccess) {
       dispatch(setUserInfo({

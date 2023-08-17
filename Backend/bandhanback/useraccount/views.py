@@ -281,17 +281,22 @@ def search_matches(request):
     return Response(serialized_data)
 
 
-class MatchDetailsView(GenericAPIView):
+class MatchDetailsView(APIView):
     renderer_classes = [UserRenderer]
-    permission_classes = [IsAuthenticated]
-    def post(self,request,match_id,format=None):
+    authentication_classes = [JWTAuthentication]
+    def get(self,request,match_id,format=None):
+        user_id = request.user.id
+        user = User.objects.filter(id=user_id).all()
+        serializer = UserProfileSerializer(user, many=True)
+        match = User.objects.filter(id=match_id).all()
+        serializer4 = UserRegistrationSerializer(match, many=True)
         match_info = UserInfo.objects.filter(user=match_id)
         match_preference = UserPreference.objects.filter(user=match_id)
         match_picture = ProfilePicture.objects.filter(user=match_id).all()
-        serielaizer1 = UserInfoSerializer(match_info, many=True)
-        serielaizer2 = UserPreferenceSerializer(match_preference, many=True)
-        serielaizer3 = ProfilePictureSerializer(match_picture, many=True)
-        return Response({'match_info':serielaizer1.data, 'match_preference':serielaizer2.data, 'match_picture':serielaizer3.data},status=status.HTTP_200_OK)
+        serializer1 = UserInfoSerializer(match_info, many=True)
+        serializer2 = UserPreferenceSerializer(match_preference, many=True)
+        serializer3 = ProfilePictureSerializer(match_picture, many=True)
+        return Response({'user_info':serializer.data,'match_name':serializer4.data,'match_info':serializer1.data, 'match_preference':serializer2.data, 'match_picture':serializer3.data},status=status.HTTP_200_OK)
     
 
 

@@ -14,9 +14,6 @@ const UserHome = ({}) => {
   const dispatch = useDispatch()
 
   const { data, isSuccess } = useGetLoggedUserQuery(access_token);
-  console.log("userhome before",data)
-  // const { picture } = useGetLoggedUserPictureQuery(access_token);
-  // console.log("userhome before",picture)
   
   useEffect(() => {
     if (data && isSuccess) {
@@ -46,7 +43,6 @@ const UserHome = ({}) => {
     }
   }, [data, isSuccess, dispatch])
   const UserData = useSelector(state => state.user)
-  console.log("userhome after",UserData)
 
   return (
     <>
