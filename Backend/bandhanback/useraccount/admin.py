@@ -1,6 +1,6 @@
 import imp
 from django.contrib import admin
-from useraccount.models import User,UserInfo,UserPreference,ProfilePicture
+from useraccount.models import User,UserInfo,UserPreference,ProfilePicture, Transaction
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 
@@ -49,5 +49,9 @@ class UserPreferenceModelAdmin(admin.ModelAdmin):
 @admin.register(ProfilePicture)
 class ProfilePictureModelAdmin(admin.ModelAdmin):
  list_display = ['id', 'user', 'image']
+ 
+ 
+admin.site.register(Transaction)
+
 
 

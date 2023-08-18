@@ -1,4 +1,5 @@
-from useraccount.serializers import UserRegistrationSerializer,UserLoginSerializer,UserProfileSerializer,UserChangePasswordSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, UserInfoSerializer, UserMobileOTPSerializer, UserPreferenceSerializer, ProfilePictureSerializer
+from urllib import response
+from useraccount.serializers import UserRegistrationSerializer,UserLoginSerializer,UserProfileSerializer,UserChangePasswordSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, UserInfoSerializer, UserMobileOTPSerializer, UserPreferenceSerializer, ProfilePictureSerializer, CreateOrderSerializer, TranscationModelSerializer
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework import status
@@ -15,6 +16,9 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from .utils import send_otp_to_phone
 from .models import UserInfo, UserMobileOTP, User
 from .models import *
+from useraccount.razorpay.main import RazorpayClient
+
+
 
 #Sending OTP and Storing it in the database
 class SendOTPView(APIView):
@@ -299,7 +303,65 @@ class MatchDetailsView(APIView):
         return Response({'user_info':serializer.data,'match_name':serializer4.data,'match_info':serializer1.data, 'match_preference':serializer2.data, 'match_picture':serializer3.data},status=status.HTTP_200_OK)
     
 
+# Creating object for razorpay client
+rz_client = RazorpayClient()
 
+class CreateOrderView(APIView):
+    authentication_classes = [JWTAuthentication]
+    def post(self,request):
+        user=request.user
+        paying_user = User.objects.filter(id=user.id).first()
+        if paying_user.is_gold == False:
+            create_order_serializer = CreateOrderSerializer(data=request.data)
+            if create_order_serializer.is_valid():
+                print(create_order_serializer.data)
+                order_response = rz_client.create_order(
+                    amount=create_order_serializer.validated_data.get("amount"),
+                    currency=create_order_serializer.validated_data.get("currency"))
+                response = {"status_code":status.HTTP_201_CREATED, "message":"order_created", "data":order_response}
+                return Response(response, status=status.HTTP_201_CREATED)
+            else:
+                response = {"status_code":status.HTTP_400_BAD_REQUEST, "message":"bad_request", "error":create_order_serializer.errors}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            response = {"status_code":status.HTTP_400_BAD_REQUEST, "message":"already paid"}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+        
+class TransactionView(APIView):
+    authentication_classes = [JWTAuthentication]
+    def post(self, request):
+        user=request.user
+        data=request.data
+        data['user'] = user.id
+        paying_user = User.objects.filter(id=user.id).first()
+        transaction_serializer = TranscationModelSerializer(data=data)
+        if transaction_serializer.is_valid():
+            rz_client.verify_payment_signature(
+                razorpay_payment_id = transaction_serializer.validated_data.get("payment_id"),
+                razorpay_order_id = transaction_serializer.validated_data.get("order_id"),
+                razorpay_signature = transaction_serializer.validated_data.get("signature")
+            )
+            transaction_serializer.save()
+            paying_user.is_gold = True
+            paying_user.save()
+            response = {
+                "status_code": status.HTTP_201_CREATED,
+                "message": "transaction created"
+            }
+            return Response(response, status=status.HTTP_201_CREATED)
+        else:
+            response = {
+                "status_code": status.HTTP_400_BAD_REQUEST,
+                "message": "bad request",
+                "error": transaction_serializer.errors
+            }
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+            
+        
     
 
      

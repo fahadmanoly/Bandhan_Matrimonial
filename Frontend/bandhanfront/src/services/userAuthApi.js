@@ -194,13 +194,45 @@ export const userAuthApi = createApi({
            
         } 
     }),
+
+
+    Payments: builder.mutation({
+        query:({amount,currency, access_token}) => {
+            return{
+                url:'order/create/',
+                method:'POST',
+                body:{amount, currency},
+                headers:{
+                    'authorization': `Bearer ${access_token}`,
+                    'Content-type': 'application/json',
+                }
+            }
+        }
+    }),
+
+
+    Complete: builder.mutation({
+        query:({payment_id, order_id, signature, amount, access_token}) => {
+            return{
+                url:'order/complete/',
+                method:'POST',
+                body:{payment_id, order_id, signature, amount},
+                headers:{
+                    'authorization': `Bearer ${access_token}`,
+                    'Content-type': 'application/json',
+                }
+            }
+        }
+    }),
     
 
 
     }),
   })
 
-export const { useRegisterUserMutation, useLoginUserMutation, useGetLoggedUserQuery, useChangeUserPasswordMutation, useForgotPasswordMutation, useResetPasswordMutation, useUserInfoMutation, useSendOTPMutation, useVerifyOTPMutation, useUserPreferenceMutation, useProfilePictureMutation, useGetLoggedUserPictureQuery, useSearchUsersQuery, useMatchDetailsQuery} = userAuthApi 
+export const { useRegisterUserMutation, useLoginUserMutation, useGetLoggedUserQuery, useChangeUserPasswordMutation, useForgotPasswordMutation, useResetPasswordMutation, useUserInfoMutation, useSendOTPMutation, useVerifyOTPMutation, useUserPreferenceMutation, useProfilePictureMutation, useGetLoggedUserPictureQuery, useSearchUsersQuery, useMatchDetailsQuery, usePaymentsMutation, useCompleteMutation} = userAuthApi
+
+
 
 
 

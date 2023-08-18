@@ -86,18 +86,18 @@ function MatchDetails() {
           <Typography>Family Values: {matchInfo.family_values}</Typography>
           <Typography>About Me: {matchInfo.about_me}</Typography>
 
-          {userInfo.is_gold===true ?  <Grid sx={{mt:10, backgroundColor:'pink'}}>
+          {userInfo.is_gold===true ?  <Grid display="flex" flexDirection="column" sx={{height:'24vh', mt:5, backgroundColor:'pink'}}>
                                        <Typography>Name: {matchName.name} </Typography>
                                         <Typography>Age: {calculateAge(matchInfo.date_of_birth)}</Typography>
                                         <Typography>Mobile: {matchInfo.mobile}</Typography>
                                         <Typography>Email: {matchName.email}</Typography>
-                                       <Box>
+                                       <Box display="flex" justifyContent="center" alignContent="center" alignItems="center" sx={{paddingTop:1}}>
                                           <Button variant="contained" onClick={connectionClick} sx={{backgroundColor: '#6d1b7b'}}>Send Connection Request</Button>
                                         </Box>
                                       </Grid>
-                                   : <Grid sx={{mt:10, backgroundColor:'pink'}}>
-                                        <h4>Only God Members can see the Contact Number and Send Connection Request</h4>
-                                        < Box>
+                                   : <Grid display="flex" flexDirection="column" sx={{height:'24vh', mt:5, backgroundColor:'pink'}}>
+                                        <h4> Only God Members can see the Contact Number and Send Connection Request</h4>
+                                        < Box display="flex" justifyContent="center" alignContent="center" alignItems="center" sx={{paddingTop:1}}>
                                           <Button variant="contained" onClick={paymentClick} sx={{backgroundColor: '#6d1b7b'}}>Become a Gold Member</Button>
                                         </Box>
                                       </Grid>

@@ -141,6 +141,24 @@ class ProfilePictureSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
         
+        
+class CreateOrderSerializer(serializers.Serializer):
+    amount = serializers.IntegerField()
+    currency = serializers.CharField()
+    
+    
+class TranscationModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = ["user", "payment_id", "order_id", "signature", "amount"]
+        
+        
+        
+
+    
+    
+        
+        
             
 
         
