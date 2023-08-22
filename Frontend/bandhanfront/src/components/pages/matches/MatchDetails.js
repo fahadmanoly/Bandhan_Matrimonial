@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Typography, Grid, Button, Avatar, Box} from '@mui/material';
 import { getToken } from '../../../services/LocalStorageService';
 import { useMatchDetailsQuery } from '../../../services/userAuthApi';
+import { useAcceptRequestMutation, useCancelRequestMutation, useDeclineRequestMutation, useSendRequestMutation } from '../../../services/friendAuthApi';
 
 
 function MatchDetails() {
@@ -12,8 +13,19 @@ function MatchDetails() {
   const {access_token} = getToken()
   const navigate = useNavigate()
   const {data, error, isLoading}= useMatchDetailsQuery({access_token, match_id});
-
+  const [sendinfo] = useSendRequestMutation()
+  const [cancelinfo] = useCancelRequestMutation()
+  const [declineinfo] = useDeclineRequestMutation()
+  const [acceptinfo] = useAcceptRequestMutation()
   const [currentPictureIndex, setCurrentPictureIndex] = useState(0);
+
+  const userInfo = data?.user_info[0];
+  const matchName = data?.match_name[0];
+  const matchInfo = data?.match_info[0];
+  const matchPreference = data?.match_preference[0];
+  const friendRequest = data?.friend_request;
+  const friendRequestGot = data?.friend_request_got;
+  const matchPicture = data?.match_picture;
 
   const calculateAge = (date_of_birth) => {
     const today = new Date();
@@ -26,9 +38,36 @@ function MatchDetails() {
     return age;
   };
 
-  const connectionClick = () => {
-    navigate('/connectionrequest');
+  const connectionSendClick = async (event) => {
+    event.preventDefault();
+    const receiver_id = match_id
+    const sendres = await sendinfo({receiver_id,access_token})
 }
+
+  const connectionCancelClick = async (event) => {
+    event.preventDefault();
+    if(friendRequest){
+      const friend_request_id = friendRequest[0].id
+      const cancelres = await cancelinfo({friend_request_id,access_token})
+    }
+  }
+
+  const connectionDeclineClick = async (event) => {
+    event.preventDefault();
+    if(friendRequestGot){
+      const friend_request_id = friendRequestGot[0].id
+      const declineres = await declineinfo({friend_request_id,access_token})
+    }  
+  }
+
+  const connectionAcceptClick = async (event) => {
+    event.preventDefault();
+     // navigate('/connectionrequest');
+    if(friendRequestGot){
+      const friend_request_id = friendRequestGot[0].id
+      const acceptres = await acceptinfo({friend_request_id,access_token})
+    }  
+  }
 
   const paymentClick = () => {
     navigate('/payments');
@@ -46,12 +85,7 @@ function MatchDetails() {
   if (error){
     return <div>Error.{error.message}</div>
   }
-  const userInfo = data?.user_info[0];
-  const matchName = data?.match_name[0];
-  const matchInfo = data?.match_info[0];
-  const matchPreference = data?.match_preference[0];
-  const matchPicture = data?.match_picture;
-  console.log("the user infor is isi si is",userInfo.is_gold)
+
 
   const profilePictureStyle = {
     width: '80%', 
@@ -87,13 +121,42 @@ function MatchDetails() {
           <Typography>About Me: {matchInfo.about_me}</Typography>
 
           {userInfo.is_gold===true ?  <Grid display="flex" flexDirection="column" sx={{height:'24vh', mt:5, backgroundColor:'pink'}}>
-                                       <Typography>Name: {matchName.name} </Typography>
+                                        <Typography>Name: {matchName.name} </Typography>
                                         <Typography>Age: {calculateAge(matchInfo.date_of_birth)}</Typography>
                                         <Typography>Mobile: {matchInfo.mobile}</Typography>
                                         <Typography>Email: {matchName.email}</Typography>
-                                       <Box display="flex" justifyContent="center" alignContent="center" alignItems="center" sx={{paddingTop:1}}>
-                                          <Button variant="contained" onClick={connectionClick} sx={{backgroundColor: '#6d1b7b'}}>Send Connection Request</Button>
-                                        </Box>
+                                          if(friendRequest){
+                                          friendRequest[0].is_accepted ===true ? <Box display="flex" justifyContent="center" alignContent="center" alignItems="center" sx={{paddingTop:1}}>
+                                            <Button variant="contained" onClick={connectionAcceptClick} sx={{backgroundColor: '#6d1b7b'}}>Chat with the Match</Button>
+                                            </Box>
+                                            : null }
+
+                                          if(friendRequest){
+                                          friendRequest[0].is_active ===true ? <Box display="flex" justifyContent="center" alignContent="center" alignItems="center" sx={{paddingTop:1}}>
+                                            <Button variant="contained" onClick={connectionCancelClick} sx={{backgroundColor: '#6d1b7b'}}>Cancel Connection Request</Button>
+                                          </Box>
+                                          : null }
+                                          
+                                          
+                                          if(friendRequestGot){
+                                          friendRequestGot[0].is_active ===true ? <Box display="flex" justifyContent="center" alignContent="center" alignItems="center" sx={{paddingTop:1}}>
+                                            <Button variant="contained" onClick={connectionDeclineClick} sx={{backgroundColor: '#6d1b7b'}}>Decline Connection Request</Button>
+                                            <Button variant="contained" onClick={connectionAcceptClick} sx={{backgroundColor: '#6d1b7b'}}>Accept Connection Request</Button> 
+                                          </Box>
+                                          : null }
+                                          
+
+
+
+                                       {/* <Box display="flex" justifyContent="center" alignContent="center" alignItems="center" sx={{paddingTop:1}}>
+                                          <Button variant="contained" onClick={connectionSendClick} sx={{backgroundColor: '#6d1b7b'}}>Send Connection Request</Button>
+                                          <Button variant="contained" onClick={connectionCancelClick} sx={{backgroundColor: '#6d1b7b'}}>Cancel Connection Request</Button>
+                                          <Button variant="contained" onClick={connectionDeclineClick} sx={{backgroundColor: '#6d1b7b'}}>Decline Connection Request</Button>
+                                          <Button variant="contained" onClick={connectionAcceptClick} sx={{backgroundColor: '#6d1b7b'}}>Accept Connection Request</Button>
+
+
+
+                                        </Box> */}
                                       </Grid>
                                    : <Grid display="flex" flexDirection="column" sx={{height:'24vh', mt:5, backgroundColor:'pink'}}>
                                         <h4> Only God Members can see the Contact Number and Send Connection Request</h4>

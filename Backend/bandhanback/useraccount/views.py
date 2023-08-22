@@ -1,4 +1,4 @@
-from urllib import response
+from sqlite3 import connect
 from useraccount.serializers import UserRegistrationSerializer,UserLoginSerializer,UserProfileSerializer,UserChangePasswordSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, UserInfoSerializer, UserMobileOTPSerializer, UserPreferenceSerializer, ProfilePictureSerializer, CreateOrderSerializer, TranscationModelSerializer
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
@@ -8,15 +8,15 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate
 from datetime import date
-from django.db.models import Q
 from useraccount.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .utils import send_otp_to_phone
-from .models import UserInfo, UserMobileOTP, User
 from .models import *
 from useraccount.razorpay.main import RazorpayClient
+from friend.models import FriendRequest,FriendList
+from friend.serializers import FriendRequestSerializer
 
 
 
@@ -300,7 +300,18 @@ class MatchDetailsView(APIView):
         serializer1 = UserInfoSerializer(match_info, many=True)
         serializer2 = UserPreferenceSerializer(match_preference, many=True)
         serializer3 = ProfilePictureSerializer(match_picture, many=True)
-        return Response({'user_info':serializer.data,'match_name':serializer4.data,'match_info':serializer1.data, 'match_preference':serializer2.data, 'match_picture':serializer3.data},status=status.HTTP_200_OK)
+        friend_request = FriendRequest.objects.filter(sender=user_id, receiver=match_id, is_active=True).all()
+        if friend_request:
+            serializer5 = FriendRequestSerializer(friend_request, many=True)
+            return Response({'friend_request':serializer5.data, 'user_info':serializer.data,'match_name':serializer4.data,'match_info':serializer1.data, 'match_preference':serializer2.data, 'match_picture':serializer3.data},status=status.HTTP_200_OK)
+        else:
+            friend_request_got = FriendRequest.objects.filter(receiver=user_id, sender=match_id, is_active=True).all()
+            if friend_request_got:
+                serializer6 = FriendRequestSerializer(friend_request_got, many=True)
+                return Response({'friend_request_got':serializer6.data, 'user_info':serializer.data,'match_name':serializer4.data,'match_info':serializer1.data, 'match_preference':serializer2.data, 'match_picture':serializer3.data},status=status.HTTP_200_OK)
+            else:
+                return Response({'user_info':serializer.data,'match_name':serializer4.data,'match_info':serializer1.data, 'match_preference':serializer2.data, 'match_picture':serializer3.data},status=status.HTTP_200_OK)
+                
     
 
 # Creating object for razorpay client

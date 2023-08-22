@@ -1,6 +1,8 @@
 from datetime import date
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 
 
@@ -60,6 +62,10 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+    
+    # @receiver(post_save, sender=User)
+    # def user_save(sender, instance, **kwargs):
+    #     FriendList.objects.get_or_create(user=instance)
     
     
 MARITAL_STATUS_CHOICES = [
@@ -200,18 +206,11 @@ class Transaction(models.Model):
     def __str__(self):
         return str(self.id)
     
+    
+    
 
-    
-
-    
-    
-    
-    
-    
         
-    
-    
-    
-
-    
-
+        
+        
+        
+        

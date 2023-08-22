@@ -11,9 +11,6 @@ const Sidebar = () => {
   const [religion, setReligion] = useState('');
   
 
- 
-  
-
   const handleSearch = () => {
     let url = '/search-results/';
 
