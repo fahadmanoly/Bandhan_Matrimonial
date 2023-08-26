@@ -1,3 +1,4 @@
+from chat.models import chatroom
 from .serializers import FriendRequestSerializer, FriendListSerializer
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
@@ -78,6 +79,10 @@ class AcceptFriendRequestView(APIView):
             friend_list_serializer1.save()
             friend_request.is_accepted = True
             friend_request.save()
+            room_name = f"{min(sender, receiver)}_{max(sender, receiver)}"
+
+            chat_room,created = chatroom.objects.get_or_create(name=room_name)
+
             return Response({'detail': 'Friend request accepted.'}, status=status.HTTP_200_OK)
         else:
             print("serializer 1 is not taking",data1)

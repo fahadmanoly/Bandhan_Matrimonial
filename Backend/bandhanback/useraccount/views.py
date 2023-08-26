@@ -300,17 +300,36 @@ class MatchDetailsView(APIView):
         serializer1 = UserInfoSerializer(match_info, many=True)
         serializer2 = UserPreferenceSerializer(match_preference, many=True)
         serializer3 = ProfilePictureSerializer(match_picture, many=True)
-        friend_request = FriendRequest.objects.filter(sender=user_id, receiver=match_id, is_active=True).all()
+        friend_request = FriendRequest.objects.filter(sender=user_id, receiver=match_id, is_active=True, is_accepted=False).all()
+        friend_request_got = FriendRequest.objects.filter(receiver=user_id, sender=match_id, is_active=True, is_accepted=False).all()
+        friend_already_sender = FriendRequest.objects.filter(sender=user_id, receiver=match_id, is_active=True, is_accepted=True).all()
+        friend_already_receiver= FriendRequest.objects.filter(receiver=user_id, sender=match_id, is_active=True, is_accepted=True).all()
+
+        
+        connection_status = None
+        
         if friend_request:
             serializer5 = FriendRequestSerializer(friend_request, many=True)
-            return Response({'friend_request':serializer5.data, 'user_info':serializer.data,'match_name':serializer4.data,'match_info':serializer1.data, 'match_preference':serializer2.data, 'match_picture':serializer3.data},status=status.HTTP_200_OK)
-        else:
-            friend_request_got = FriendRequest.objects.filter(receiver=user_id, sender=match_id, is_active=True).all()
-            if friend_request_got:
-                serializer6 = FriendRequestSerializer(friend_request_got, many=True)
-                return Response({'friend_request_got':serializer6.data, 'user_info':serializer.data,'match_name':serializer4.data,'match_info':serializer1.data, 'match_preference':serializer2.data, 'match_picture':serializer3.data},status=status.HTTP_200_OK)
-            else:
-                return Response({'user_info':serializer.data,'match_name':serializer4.data,'match_info':serializer1.data, 'match_preference':serializer2.data, 'match_picture':serializer3.data},status=status.HTTP_200_OK)
+            connection_status = "request_sent"
+            # return Response({'friend_request':serializer5.data, 'user_info':serializer.data,'match_name':serializer4.data,'match_info':serializer1.data, 'match_preference':serializer2.data, 'match_picture':serializer3.data},status=status.HTTP_200_OK)
+        elif friend_request_got:
+            serializer6 = FriendRequestSerializer(friend_request_got, many=True)
+            connection_status = "request_received"
+            # return Response({'friend_request_got':serializer6.data, 'user_info':serializer.data,'match_name':serializer4.data,'match_info':serializer1.data, 'match_preference':serializer2.data, 'match_picture':serializer3.data},status=status.HTTP_200_OK)
+        elif friend_already_sender or friend_already_receiver:
+            connection_status = "already_friends"
+            
+        response_data ={
+            'connection_status':connection_status,
+            'user_info':serializer.data,
+            'match_name':serializer4.data,
+            'match_info':serializer1.data,
+            'match_preference':serializer2.data,
+            'match_picture':serializer3.data     
+        }
+        
+        return Response(response_data,status=status.HTTP_200_OK)
+        # return Response({'user_info':serializer.data,'match_name':serializer4.data,'match_info':serializer1.data, 'match_preference':serializer2.data, 'match_picture':serializer3.data},status=status.HTTP_200_OK)
                 
     
 

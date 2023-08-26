@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Typography, Grid, Button, Avatar, Box} from '@mui/material';
 import { getToken } from '../../../services/LocalStorageService';
@@ -18,6 +18,24 @@ function MatchDetails() {
   const [declineinfo] = useDeclineRequestMutation()
   const [acceptinfo] = useAcceptRequestMutation()
   const [currentPictureIndex, setCurrentPictureIndex] = useState(0);
+  const [connectionStatus,setConnectionStatus] = useState(null);
+
+  useEffect(() => {
+    if(data) {
+      if(data.connection_status === "request_sent"){
+        setConnectionStatus("request_sent");
+      }else if (data.connection_status ==="request_received") {
+        setConnectionStatus('request_received');
+      }else if(data.connection_status ==="already_friends"){
+        setConnectionStatus("already_friends")
+      }else {
+        setConnectionStatus('no_request');
+      }
+    }
+  },[data]);
+
+  console.log("the data ia",data)
+  console.log("the connection sttaus is",connectionStatus)
 
   const userInfo = data?.user_info[0];
   const matchName = data?.match_name[0];
@@ -37,6 +55,52 @@ function MatchDetails() {
     }
     return age;
   };
+
+
+  const connectionButton = () => {
+    // if (!isGoldMember) {
+    //   return (
+    //     <Box display="flex" justifyContent="center" alignContent="center" alignItems="center" sx={{ paddingTop: 1 }}>
+    //       <Button variant="contained" onClick={paymentClick} sx={{ backgroundColor: '#6d1b7b' }}>
+    //         Become a Gold Member
+    //       </Button>
+    //     </Box>
+    //   );
+    // } else 
+    if (connectionStatus === 'request_sent') {
+      return (
+        <Button variant="contained" onClick={connectionCancelClick} sx={{ backgroundColor: '#6d1b7b' }}>
+          Cancel Connection Request
+        </Button>
+      );
+    } else if (connectionStatus === 'request_received') {
+      return (
+        <Box>
+          <Button variant="contained" onClick={connectionDeclineClick} sx={{ backgroundColor: '#6d1b7b' }}>
+            Decline Connection Request
+          </Button>
+        
+          <Button variant="contained" onClick={connectionAcceptClick} sx={{ backgroundColor: '#6d1b7b' }}>
+            Accept Connection Request
+          </Button>
+        </Box>
+      );
+    } else if (connectionStatus === 'already_friends'){
+      return(
+        <Button variant="contained" onClick={connectionChat} sx={{ backgroundColor: '#6d1b7b' }}>
+          Chat With the Match
+        </Button>
+        )
+    } else {
+      return (
+        <Button variant="contained" onClick={connectionSendClick} sx={{ backgroundColor: '#6d1b7b' }}>
+          Send Connection Request
+        </Button>
+      );
+    }
+  };
+
+
 
   const connectionSendClick = async (event) => {
     event.preventDefault();
@@ -66,8 +130,14 @@ function MatchDetails() {
     if(friendRequestGot){
       const friend_request_id = friendRequestGot[0].id
       const acceptres = await acceptinfo({friend_request_id,access_token})
+      console.log("the accept result after",acceptres)
     }  
   }
+
+
+  const connectionChat = () => {
+    navigate('/connectionrequest');
+}
 
   const paymentClick = () => {
     navigate('/payments');
@@ -121,43 +191,22 @@ function MatchDetails() {
           <Typography>About Me: {matchInfo.about_me}</Typography>
 
           {userInfo.is_gold===true ?  <Grid display="flex" flexDirection="column" sx={{height:'24vh', mt:5, backgroundColor:'pink'}}>
-                                        <Typography>Name: {matchName.name} </Typography>
+                                       <Typography>Name: {matchName.name} </Typography>
                                         <Typography>Age: {calculateAge(matchInfo.date_of_birth)}</Typography>
                                         <Typography>Mobile: {matchInfo.mobile}</Typography>
                                         <Typography>Email: {matchName.email}</Typography>
-                                          if(friendRequest){
-                                          friendRequest[0].is_accepted ===true ? <Box display="flex" justifyContent="center" alignContent="center" alignItems="center" sx={{paddingTop:1}}>
-                                            <Button variant="contained" onClick={connectionAcceptClick} sx={{backgroundColor: '#6d1b7b'}}>Chat with the Match</Button>
-                                            </Box>
-                                            : null }
 
-                                          if(friendRequest){
-                                          friendRequest[0].is_active ===true ? <Box display="flex" justifyContent="center" alignContent="center" alignItems="center" sx={{paddingTop:1}}>
-                                            <Button variant="contained" onClick={connectionCancelClick} sx={{backgroundColor: '#6d1b7b'}}>Cancel Connection Request</Button>
-                                          </Box>
-                                          : null }
-                                          
-                                          
-                                          if(friendRequestGot){
-                                          friendRequestGot[0].is_active ===true ? <Box display="flex" justifyContent="center" alignContent="center" alignItems="center" sx={{paddingTop:1}}>
-                                            <Button variant="contained" onClick={connectionDeclineClick} sx={{backgroundColor: '#6d1b7b'}}>Decline Connection Request</Button>
-                                            <Button variant="contained" onClick={connectionAcceptClick} sx={{backgroundColor: '#6d1b7b'}}>Accept Connection Request</Button> 
-                                          </Box>
-                                          : null }
-                                          
-
-
-
-                                       {/* <Box display="flex" justifyContent="center" alignContent="center" alignItems="center" sx={{paddingTop:1}}>
-                                          <Button variant="contained" onClick={connectionSendClick} sx={{backgroundColor: '#6d1b7b'}}>Send Connection Request</Button>
+                                       <Box display="flex" justifyContent="center" alignContent="center" alignItems="center" sx={{paddingTop:1}}>
+                                          {connectionButton()}
+                                          {/* <Button variant="contained" onClick={connectionSendClick} sx={{backgroundColor: '#6d1b7b'}}>Send Connection Request</Button>
                                           <Button variant="contained" onClick={connectionCancelClick} sx={{backgroundColor: '#6d1b7b'}}>Cancel Connection Request</Button>
                                           <Button variant="contained" onClick={connectionDeclineClick} sx={{backgroundColor: '#6d1b7b'}}>Decline Connection Request</Button>
-                                          <Button variant="contained" onClick={connectionAcceptClick} sx={{backgroundColor: '#6d1b7b'}}>Accept Connection Request</Button>
+                                          <Button variant="contained" onClick={connectionAcceptClick} sx={{backgroundColor: '#6d1b7b'}}>Accept Connection Request</Button> */}
+                                        </Box>
 
-
-
-                                        </Box> */}
                                       </Grid>
+
+                                      
                                    : <Grid display="flex" flexDirection="column" sx={{height:'24vh', mt:5, backgroundColor:'pink'}}>
                                         <h4> Only God Members can see the Contact Number and Send Connection Request</h4>
                                         < Box display="flex" justifyContent="center" alignContent="center" alignItems="center" sx={{paddingTop:1}}>

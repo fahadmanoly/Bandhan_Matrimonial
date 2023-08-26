@@ -33,7 +33,7 @@ const Sidebar = () => {
         <Box sx={{width: 250, position: 'fixed', top: 64, height: 'calc(100vh - 64px)', backgroundColor: '#f0f0f0' }}>
       
             <Typography variant="h6" gutterBottom sx={{fontSize:'1rem', marginTop:2, marginBottom:0, ml:2}}>
-               Search
+               Filter
             </Typography>
 {/* 
             <input type='number' placeholder='Min Age' value={ageMin} onChange={(e) =>setAgeMin(e.target.value)}/> 
@@ -50,11 +50,11 @@ const Sidebar = () => {
       
             <Box sx={{display:'flex', justifyContent:'center'}}>
               <Button variant="contained" sx={{ marginTop: 1, backgroundColor:"#6d1b7b"}} onClick={handleSearch}>
-                 Search
+                 Filter
               </Button>
             </Box>
 
-          <Typography variant="h6" gutterBottom sx={{fontSize:'1rem', marginTop:2, marginBottom:0, ml:2}}>
+          {/* <Typography variant="h6" gutterBottom sx={{fontSize:'1rem', marginTop:2, marginBottom:0, ml:2}}>
            Filters
           </Typography>
       
@@ -83,13 +83,13 @@ const Sidebar = () => {
               <MenuItem value="option1">Option 1</MenuItem>
               <MenuItem value="option2">Option 2</MenuItem>
             </Select>
-          </FormControl>
+          </FormControl> */}
 
-          <Box sx={{display:'flex', justifyContent:'center'}}>
+          {/* <Box sx={{display:'flex', justifyContent:'center'}}>
             <Button variant="contained" sx={{ marginTop: 1, backgroundColor:"#6d1b7b"}}>
                 Filter
             </Button>
-          </Box>
+          </Box> */}
     
         </Box>
 

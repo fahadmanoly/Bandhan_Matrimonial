@@ -28,12 +28,14 @@ SECRET_KEY = 'django-insecure-fjeh+5b8l-900$25sp7i^hf-@xyw4b2!i1-7gt$7y=go^djuue
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,7 +47,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'useraccount',
     'friend',
-
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -78,8 +80,17 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'bandhanback.wsgi.application'
+ASGI_APPLICATION = 'bandhanback.asgi.application'
 
-
+#for configuring redis
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
