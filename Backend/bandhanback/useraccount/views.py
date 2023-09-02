@@ -15,7 +15,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from .utils import send_otp_to_phone
 from .models import *
 from useraccount.razorpay.main import RazorpayClient
-from friend.models import FriendRequest,FriendList
+from friend.models import FriendRequest
 from friend.serializers import FriendRequestSerializer
 
 
@@ -30,8 +30,6 @@ class SendOTPView(APIView):
         user_info= UserInfo.objects.get(user=user_id)
         mobile = user_info.mobile
         user_info_id = user_info.id
-        print(user_info_id)
-        print(mobile)
         otp = send_otp_to_phone(mobile)
         print('printing otp from view',otp)
         otp_data = {
@@ -45,30 +43,6 @@ class SendOTPView(APIView):
             return Response({'msg':'OTP sent successfully'},status = status.HTTP_201_CREATED)
         return Response(otp_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-#Verifying OTP
-# class VerifyOTPView(GenericAPIView):
-#     #renderer_classes = [UserRenderer]
-#     # permission_classes = [IsAuthenticated]
-#     serializer_class=UserMobileOTPSerializer 
-#     def post(self,request,format=None):
-#         serializer = UserMobileOTPSerializer(data=request.data)
-#         breakpoint()
-#         if serializer.is_valid(raise_exception=True):
-#             user_id = serializer.validated_data['id']
-#             mobile = serializer.validated_data['mobile']
-#             user_otp = serializer.validated_data['otp']
-#             try:
-#                 user_instance = User.objects.get(id=user_id, is_phone_verified=False) 
-#                 otp_instance = UserMobileOTP.objects.get(user=user_id, mobile=mobile, otp=user_otp, otp_verified=False)
-                
-#             except UserMobileOTP.DoesNotExist:
-#                 return Response({'msg':'Invalid OTP'}, status=status.HTTP_400_BAD_REQUEST)
-#             otp_instance.otp_verified=True
-#             user_instance.is_phone_verified = True
-#             user_instance.save()
-#             otp_instance.save()
-#             return Response({'msg': 'OTP verification successful'}, status=status.HTTP_200_OK)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
          
 class VerifyOTPView(APIView):
     renderer_classes = [UserRenderer]
@@ -99,8 +73,6 @@ class UserRegistrationView(APIView):
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
-            # token = get_tokens_for_user(user)
-            # return Response({'token':token, 'msg':'Registration Successful'},status=status.HTTP_201_CREATED)
             return Response({'msg':'Registration Successful'},status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -311,11 +283,11 @@ class MatchDetailsView(APIView):
         if friend_request:
             serializer5 = FriendRequestSerializer(friend_request, many=True)
             connection_status = "request_sent"
-            # return Response({'friend_request':serializer5.data, 'user_info':serializer.data,'match_name':serializer4.data,'match_info':serializer1.data, 'match_preference':serializer2.data, 'match_picture':serializer3.data},status=status.HTTP_200_OK)
+           
         elif friend_request_got:
             serializer6 = FriendRequestSerializer(friend_request_got, many=True)
             connection_status = "request_received"
-            # return Response({'friend_request_got':serializer6.data, 'user_info':serializer.data,'match_name':serializer4.data,'match_info':serializer1.data, 'match_preference':serializer2.data, 'match_picture':serializer3.data},status=status.HTTP_200_OK)
+            
         elif friend_already_sender or friend_already_receiver:
             connection_status = "already_friends"
             
@@ -329,7 +301,7 @@ class MatchDetailsView(APIView):
         }
         
         return Response(response_data,status=status.HTTP_200_OK)
-        # return Response({'user_info':serializer.data,'match_name':serializer4.data,'match_info':serializer1.data, 'match_preference':serializer2.data, 'match_picture':serializer3.data},status=status.HTTP_200_OK)
+       
                 
     
 
@@ -344,7 +316,6 @@ class CreateOrderView(APIView):
         if paying_user.is_gold == False:
             create_order_serializer = CreateOrderSerializer(data=request.data)
             if create_order_serializer.is_valid():
-                print(create_order_serializer.data)
                 order_response = rz_client.create_order(
                     amount=create_order_serializer.validated_data.get("amount"),
                     currency=create_order_serializer.validated_data.get("currency"))

@@ -1,7 +1,6 @@
 from django.forms.models import model_to_dict
 import json
-# Create your views here.
-from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import GenericAPIView
 from django.http import JsonResponse
 from .models import chatroom, ChatMessage
@@ -9,6 +8,7 @@ from useraccount.models import User
 from .serializer import *
 
 class ChatMessageView(GenericAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class=MessageSerializer
     def post(self, request):
         room_name = request.data.get('room_name')
@@ -28,9 +28,7 @@ class ChatMessageView(GenericAPIView):
                 receiver=receiver
             )
             try:
-                print(sender.id)
                 data_ = ChatMessage.objects.filter(sender=sender.id,message=message).first()
-                # data_['sender']=sender.name
                 serializer = MessageSerializer(chat_message)
                 data = serializer.data
             except ChatMessage.DoesNotExist:
@@ -40,8 +38,9 @@ class ChatMessageView(GenericAPIView):
             return JsonResponse({'success': False, 'message': 'Chat room does not exist.'})
         except User.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Sender user does not exist.'})
-    def get(self, request):
-        room_name = request.data.get('room_name')
+    
+    def get(self, request,user_Id,match_Id):
+        room_name = request.GET.get('room_name')
         try:
             room = chatroom.objects.get(name=room_name)
             messages = room.messages.all().order_by('time')

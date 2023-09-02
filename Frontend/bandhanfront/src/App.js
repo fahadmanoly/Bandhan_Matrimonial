@@ -17,8 +17,8 @@ import UserHome from './components/pages/profile/UserHome';
 import UploadImage from './components/parts/UploadImage';
 import SearchResults from './components/pages/matches/SearchResults';
 import MatchDetails from './components/pages/matches/MatchDetails';
-import ConnectionRequest from './components/pages/matches/ConnectionRequest';
 import Payments from './components/pages/matches/Payments';
+import Chat from './components/pages/matches/Chat';
 
 
 function App() {
@@ -42,7 +42,7 @@ function App() {
           <Route path='profilepicture' element={ access_token ? <UploadImage /> : <Navigate to="/login" />} />
           <Route path="/search-results/:age_min/:age_max/:religion/:gender" element={<SearchResults />} />
           <Route path="/match-details/:match_id" element={<MatchDetails />} />
-          <Route path='connectionrequest' element={ access_token ? <ConnectionRequest /> : <Navigate to="/login" />} />
+          <Route path='message/:user_Id/:match_Id' element={ access_token ? <Chat /> : <Navigate to="/login" />} />
 
         </Route> 
         <Route path='/userprofile' element={<UserProfile />} />

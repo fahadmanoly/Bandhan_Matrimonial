@@ -28,16 +28,12 @@ def send_otp_to_phone(mobile):
         'Content-Type': "application/x-www-form-urlencoded",
         'Cache-Control': "no-cache",
         }
-        print('before sending',otp)
         response = requests.request("POST", url, data=payload, headers=headers)
-        print(response.text)
         return otp
          
     except Exception as e:
         return None
     
-# phone='9656687801'
-# otp=send_otp_to_phone(phone)
-# print('after sending',otp)
+
     
       

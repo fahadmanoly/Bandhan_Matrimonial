@@ -1,15 +1,13 @@
-from useraccount.serializers import ProfilePictureSerializer
 from rest_framework.serializers import (ModelSerializer,CharField)
 from rest_framework import serializers
 from .models import ChatMessage
-from useraccount.models import User,ProfilePicture
+from useraccount.models import User
 
 
 class ChatSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-       
         fields = ['id', 'email', 'name']
 
 

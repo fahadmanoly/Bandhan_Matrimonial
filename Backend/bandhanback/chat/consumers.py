@@ -10,13 +10,10 @@ from django.core.exceptions import ObjectDoesNotExist
 class ChatConsumer(AsyncWebsocketConsumer):
     room_group_name = None
     room_name = None
-    print("Before connection start")
     
     async def connect(self):
-        print("After connection start")
         room_name = self.scope['url_route']['kwargs']['room_id']
         employee_ids = room_name.split('_')
-        print(employee_ids)
 
         employee1_id = int(employee_ids[0])
         employee2_id = int(employee_ids[1])
@@ -44,7 +41,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
     
 
     async def disconnect(self, close_code):
-        print("DISCONNECT")
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name

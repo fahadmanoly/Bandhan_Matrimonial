@@ -1,6 +1,4 @@
-from dataclasses import fields
 from rest_framework import serializers
-from useraccount.serializers import UserProfileSerializer
 from .models import FriendRequest, FriendList
 
 

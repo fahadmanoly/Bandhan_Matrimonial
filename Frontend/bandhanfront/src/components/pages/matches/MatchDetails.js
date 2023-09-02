@@ -126,7 +126,6 @@ function MatchDetails() {
 
   const connectionAcceptClick = async (event) => {
     event.preventDefault();
-     // navigate('/connectionrequest');
     if(friendRequestGot){
       const friend_request_id = friendRequestGot[0].id
       const acceptres = await acceptinfo({friend_request_id,access_token})
@@ -136,7 +135,7 @@ function MatchDetails() {
 
 
   const connectionChat = () => {
-    navigate('/connectionrequest');
+    navigate(`/message/${userInfo.id}/${match_id}`);
 }
 
   const paymentClick = () => {

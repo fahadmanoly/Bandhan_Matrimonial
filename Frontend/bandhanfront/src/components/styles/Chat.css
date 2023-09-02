@@ -1,0 +1,37 @@
+@media (max-width: 768px) {
+    .input-emoji {
+      width: calc(100% - 70px);
+      max-width: calc(100% - 70px);
+      margin-right: 10px;
+    }  
+  }
+
+
+  .smaller-text {
+    font-size: 11px; 
+  }
+
+  .sender {
+    text-align: start; 
+    /* background-color: #43a047;  */
+    color: white;
+    /* border-radius: 2px;
+    width:auto; */
+  }
+  
+  .receiver {
+    margin-right: 40px;
+    text-align: end; 
+    /* background-color: #9e9d24;  */
+    color: black; 
+    /* border-radius: 2px;
+    width: auto; */
+  }
+
+  .button {
+    margin-left: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    align-self: center;
+    justify-content: center;
+  }
