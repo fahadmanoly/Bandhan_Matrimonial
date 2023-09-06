@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-fjeh+5b8l-900$25sp7i^hf-@xyw4b2!i1-7gt$7y=go^djuue'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -215,10 +215,17 @@ SIMPLE_JWT = {
 
 PASSWORD_RESET_TIMEOUT=900
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "http://127.0.0.1:3000",
+# ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS = ['http://localhost:8000','http://10.0.2.2:8000']
+else:
+    CSRF_TRUSTED_ORIGINS = ['https://e-learning003.netlify.app']
 
 # Razorpay
 RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID")
