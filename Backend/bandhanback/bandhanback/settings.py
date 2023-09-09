@@ -139,7 +139,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-#STATICFILES_DIRS = [os.path.join(BASE_DIR,'build/static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR,'build/static')]
 #STATIC_ROOT=os.path.join(BASE_DIR,'static')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -152,20 +152,6 @@ REST_FRAMEWORK = {
     #'DEFAULT_RENDERER_CLASSES':('rest_framework.renderers.JSONRenderer',)
 }
 
-# SIMPLE_JWT = {
-#    'AUTH_HEADER_TYPES': ('JWT',),
-# }
-
-# DJOSER = {
-#     'LOGIN_FIELD':'email',
-#     'USER_CREATE_PASSWORD_RETYPE':True,
-#     'PASSWORD_CHANGED_EMAIL_COONFIRMATION':True,
-#     'SET_PASSWORD_RETYPE': True,
-#     'PASSWORD_RESET_CONFIRM_URL':'password/reset/confirm/{uid}/{token}',
-#     'ACTIVATION_URL':'activate/{uid}/{token}',
-#     'SEND_ACTIVATION_EMAIL':True,
-#     'SERIALIZERS':{},
-# }
 
 
 
@@ -215,17 +201,17 @@ SIMPLE_JWT = {
 
 PASSWORD_RESET_TIMEOUT=900
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
-#     "http://127.0.0.1:3000",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
 
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = True
-if DEBUG:
-    CSRF_TRUSTED_ORIGINS = ['http://localhost:8000','http://10.0.2.2:8000']
-else:
-    CSRF_TRUSTED_ORIGINS = ['https://e-learning003.netlify.app']
+# CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOW_CREDENTIALS = True
+# if DEBUG:
+#     CSRF_TRUSTED_ORIGINS = ['http://localhost:8000','http://10.0.2.2:8000']
+# else:
+#     CSRF_TRUSTED_ORIGINS = ['https://e-learning003.netlify.app']
 
 # Razorpay
 RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID")
