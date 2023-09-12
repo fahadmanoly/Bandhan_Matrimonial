@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const friendAuthApi = createApi({
   reducerPath: 'friendAuthApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://127.0.0.1:8000/api/connect/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://www.manoly.life/api/connect/' }),
   endpoints: (builder) => ({
 
     sendRequest: builder.mutation({
