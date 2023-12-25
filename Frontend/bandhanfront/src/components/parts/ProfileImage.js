@@ -17,10 +17,11 @@ const ProfileImage = () => {
       .then((response) => response.json())
       .then((data) => {
         // Assuming your backend returns an object with 'imageUrl' field containing the URL
-        console.log(data)
+        console.log("the data is",data)
         setProfilePictures(data);
         if (data.length > 0) {
           setProfileImageUrl(data[0].image);
+          console.log("full image url:",`https://manoly.life${data[0].image}`);
         }
       })
       .catch((error) => {
