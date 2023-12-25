@@ -31,7 +31,8 @@ const Chat = () => {
 
     useEffect(() => {
       const room_name = `${Math.min(user_Id, match_Id)}_${Math.max(user_Id, match_Id)}`;
-      const new_socket = new WebSocket(`ws://127.0.0.1:8000/ws/chat/${room_name}/`);
+      //const new_socket = new WebSocket(`ws://127.0.0.1:8000/ws/chat/${room_name}/`);
+      const new_socket = new WebSocket(`ws://manoly.life/ws/chat/${room_name}/`);
       setRoomName(room_name);
       
       new_socket.onopen = () => {
