@@ -17,6 +17,7 @@ const ProfileImage = () => {
       .then((response) => response.json())
       .then((data) => {
         // Assuming your backend returns an object with 'imageUrl' field containing the URL
+        console.log(data)
         setProfilePictures(data);
         if (data.length > 0) {
           setProfileImageUrl(data[0].image);
@@ -30,7 +31,7 @@ const ProfileImage = () => {
   return (
     <Box sx={{ width:'90%', maxWidth:'250px', height:'90%', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px', border: '1px solid #ccc', borderRadius: '4px', marginTop:8}}>
       {profileImageUrl ? (
-        <Avatar alt="Profile Image" src={`https://manoly.life/api/user/image${profileImageUrl}`} sx={{ width: '100%', height: '100%', borderRadius:0}} />
+        <Avatar alt="Profile Image" src={`https://manoly.life${profileImageUrl}`} sx={{ width: '100%', height: '100%', borderRadius:0}} />
       ) : (
         <Avatar sx={{ width: 100, height: 100, marginTop:4 }} /> // Fallback if image URL is not available
       )}

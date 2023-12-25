@@ -39,7 +39,7 @@ function SearchResults() {
         <Grid item key={user.id} xs={12} sm={3} >
           <Link to={{pathname:`/match-details/${user.id}`, state:{userData:user}}} style={{ textDecoration: 'none' }}>
               <Grid key={user.id} style={{ border: '2px solid #ccc', margin: '10px', padding: '10px' }}>
-                <img style={profilePictureStyle} src={`https://www.manoly.life:8000${user.profile_picture}`} />
+                <img style={profilePictureStyle} src={`https://www.manoly.life${user.profile_picture}`} />
      
                 <Typography variant="body2" component="div"> {user.name} , {user.gender} , {user.date_of_birth} Years Old,  {user.religion}</Typography>
                 {/* <Typography variant="body2" color="textSecondary"> Age: {user.date_of_birth} </Typography>
