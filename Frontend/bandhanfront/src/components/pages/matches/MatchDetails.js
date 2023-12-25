@@ -167,7 +167,7 @@ function MatchDetails() {
   return (
     <Grid container noValidate  sx={{height:'100vh', backgroundColor:'white', padding:'1px', paddingTop:'1px',width: "100%" }}>
       <Grid item xs={5} display={"flex"} flexDirection={"column"} sx={{backgroundColor:"white", padding:'1px', paddingTop:'1px', color: '#6d1b7b'}}>
-          <Avatar style={profilePictureStyle} src={`https://www.manoly.life${matchPicture[currentPictureIndex].image}`} alt={`Profile ${currentPictureIndex}`} />
+          <Avatar style={profilePictureStyle} src={`https://www.manoly.life:8000${matchPicture[currentPictureIndex].image}`} alt={`Profile ${currentPictureIndex}`} />
           <Button onClick={handleNextPicture}>Next</Button>
 
       </Grid>
