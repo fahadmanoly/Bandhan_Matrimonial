@@ -9,7 +9,7 @@ const ProfileImage = () => {
 
   // Fetch the profile image URL from the backend (replace 'backend-url' with your actual backend endpoint)
   useEffect(() => {
-    fetch('https://manoly.life/api/user/image/', {
+    fetch('https://www.manoly.life/api/user/image/', {
       headers:{
         Authorization: `Bearer ${access_token}`,
       },
